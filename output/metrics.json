@@ -1,0 +1,269 @@
+{
+  "page_recall_at5": 0.9175,
+  "page_recall_at_topk": 0.9245,
+  "evidence_recall_at5": 0.878,
+  "evidence_recall_at5_reranker": 0.8615,
+  "use_evidence_selector": true,
+  "evidence_recall_at5_no_hop": 0.8615,
+  "hop_delta": null,
+  "classification_acc_no_calibration": 0.772,
+  "classification_acc_old_prior_correction": 0.777,
+  "classification_acc_calibrated": 0.772,
+  "classification_acc_oracle_evidence": 0.798,
+  "active_members": [
+    "macbert_base",
+    "roberta_base",
+    "erlangshen_110m",
+    "erlangshen_330m",
+    "qwen06_pilot"
+  ],
+  "member_dev_acc": {
+    "macbert_base": 0.7136666666666667,
+    "roberta_base": 0.7226666666666667,
+    "erlangshen_110m": 0.747,
+    "erlangshen_330m": 0.7663333333333333,
+    "qwen06_pilot": 0.7103333333333334
+  },
+  "ensemble_subsets": [
+    {
+      "members": "roberta_base+erlangshen_110m+erlangshen_330m",
+      "acc": 0.7783,
+      "cfever": 0.7383
+    },
+    {
+      "members": "macbert_base+erlangshen_110m+erlangshen_330m",
+      "acc": 0.776,
+      "cfever": 0.736
+    },
+    {
+      "members": "roberta_base+erlangshen_110m+erlangshen_330m+qwen06_pilot",
+      "acc": 0.7763,
+      "cfever": 0.7357
+    },
+    {
+      "members": "erlangshen_110m+erlangshen_330m+qwen06_pilot",
+      "acc": 0.7793,
+      "cfever": 0.735
+    },
+    {
+      "members": "erlangshen_110m+erlangshen_330m",
+      "acc": 0.7763,
+      "cfever": 0.7337
+    },
+    {
+      "members": "macbert_base+roberta_base+erlangshen_110m+erlangshen_330m",
+      "acc": 0.7723,
+      "cfever": 0.7337
+    },
+    {
+      "members": "roberta_base+erlangshen_330m+qwen06_pilot",
+      "acc": 0.7743,
+      "cfever": 0.7337
+    },
+    {
+      "members": "macbert_base+erlangshen_110m+erlangshen_330m+qwen06_pilot",
+      "acc": 0.7757,
+      "cfever": 0.7337
+    },
+    {
+      "members": "macbert_base+roberta_base+erlangshen_110m+erlangshen_330m+qwen06_pilot",
+      "acc": 0.772,
+      "cfever": 0.733
+    },
+    {
+      "members": "roberta_base+erlangshen_330m",
+      "acc": 0.7727,
+      "cfever": 0.7323
+    },
+    {
+      "members": "macbert_base+erlangshen_330m",
+      "acc": 0.771,
+      "cfever": 0.731
+    },
+    {
+      "members": "macbert_base+roberta_base+erlangshen_330m",
+      "acc": 0.7683,
+      "cfever": 0.7307
+    },
+    {
+      "members": "macbert_base+roberta_base+erlangshen_330m+qwen06_pilot",
+      "acc": 0.7683,
+      "cfever": 0.7297
+    },
+    {
+      "members": "macbert_base+erlangshen_330m+qwen06_pilot",
+      "acc": 0.7707,
+      "cfever": 0.7283
+    },
+    {
+      "members": "erlangshen_330m",
+      "acc": 0.7663,
+      "cfever": 0.725
+    },
+    {
+      "members": "erlangshen_330m+qwen06_pilot",
+      "acc": 0.766,
+      "cfever": 0.7227
+    },
+    {
+      "members": "roberta_base+erlangshen_110m+qwen06_pilot",
+      "acc": 0.759,
+      "cfever": 0.7197
+    },
+    {
+      "members": "macbert_base+roberta_base+erlangshen_110m",
+      "acc": 0.7573,
+      "cfever": 0.719
+    },
+    {
+      "members": "roberta_base+erlangshen_110m",
+      "acc": 0.7577,
+      "cfever": 0.718
+    },
+    {
+      "members": "macbert_base+roberta_base+erlangshen_110m+qwen06_pilot",
+      "acc": 0.757,
+      "cfever": 0.7173
+    },
+    {
+      "members": "macbert_base+erlangshen_110m+qwen06_pilot",
+      "acc": 0.7557,
+      "cfever": 0.7157
+    },
+    {
+      "members": "erlangshen_110m+qwen06_pilot",
+      "acc": 0.7583,
+      "cfever": 0.715
+    },
+    {
+      "members": "macbert_base+erlangshen_110m",
+      "acc": 0.75,
+      "cfever": 0.71
+    },
+    {
+      "members": "erlangshen_110m",
+      "acc": 0.747,
+      "cfever": 0.7077
+    },
+    {
+      "members": "macbert_base+roberta_base+qwen06_pilot",
+      "acc": 0.743,
+      "cfever": 0.705
+    },
+    {
+      "members": "macbert_base+roberta_base",
+      "acc": 0.7353,
+      "cfever": 0.6983
+    },
+    {
+      "members": "roberta_base+qwen06_pilot",
+      "acc": 0.7337,
+      "cfever": 0.6967
+    },
+    {
+      "members": "macbert_base+qwen06_pilot",
+      "acc": 0.7327,
+      "cfever": 0.6927
+    },
+    {
+      "members": "roberta_base",
+      "acc": 0.7227,
+      "cfever": 0.6857
+    },
+    {
+      "members": "macbert_base",
+      "acc": 0.7137,
+      "cfever": 0.6783
+    },
+    {
+      "members": "qwen06_pilot",
+      "acc": 0.7103,
+      "cfever": 0.669
+    }
+  ],
+  "cfever_score_no_calibration": 0.733,
+  "cfever_score_calibration_crossfit": 0.7326666666666667,
+  "cfever_score_crossfit_baseline": 0.733,
+  "use_calibration": false,
+  "calibration_bias": [
+    0.0,
+    0.0,
+    0.0
+  ],
+  "cfever_score": 0.733,
+  "per_label_recall": {
+    "supports": 0.846,
+    "refutes": 0.749,
+    "NOT ENOUGH INFO": 0.721
+  },
+  "page_table": {
+    "Recall@1": {
+      "只用標題比對": 0.5235,
+      "只用 BM25": 0.54,
+      "只用稠密檢索": 0.5235,
+      "RRF 融合（無學習）": 0.6995,
+      "學習式排序（本方法）": 0.7915
+    },
+    "Recall@3": {
+      "只用標題比對": 0.7405,
+      "只用 BM25": 0.6385,
+      "只用稠密檢索": 0.6575,
+      "RRF 融合（無學習）": 0.829,
+      "學習式排序（本方法）": 0.8955
+    },
+    "Recall@5": {
+      "只用標題比對": 0.8255,
+      "只用 BM25": 0.6725,
+      "只用稠密檢索": 0.6965,
+      "RRF 融合（無學習）": 0.8535,
+      "學習式排序（本方法）": 0.9175
+    },
+    "Recall@6": {
+      "只用標題比對": 0.8385,
+      "只用 BM25": 0.6845,
+      "只用稠密檢索": 0.7135,
+      "RRF 融合（無學習）": 0.857,
+      "學習式排序（本方法）": 0.9245
+    },
+    "Recall@10": {
+      "只用標題比對": 0.8635,
+      "只用 BM25": 0.7175,
+      "只用稠密檢索": 0.7555,
+      "RRF 融合（無學習）": 0.876,
+      "學習式排序（本方法）": 0.9375
+    },
+    "Recall@20": {
+      "只用標題比對": 0.9,
+      "只用 BM25": 0.7585,
+      "只用稠密檢索": 0.7975,
+      "RRF 融合（無學習）": 0.922,
+      "學習式排序（本方法）": 0.941
+    }
+  },
+  "evidence_table": {
+    "Recall@1": {
+      "第二跳（扣 0 分）": 0.4885,
+      "第二跳（扣 1 分）": 0.4945,
+      "第二跳（扣 2 分）": 0.4955,
+      "第二跳（扣 3 分）": 0.4955,
+      "第二跳（扣 5 分）": 0.4955,
+      "不使用第二跳": 0.4955
+    },
+    "Recall@3": {
+      "第二跳（扣 0 分）": 0.7865,
+      "第二跳（扣 1 分）": 0.7965,
+      "第二跳（扣 2 分）": 0.8015,
+      "第二跳（扣 3 分）": 0.802,
+      "第二跳（扣 5 分）": 0.8015,
+      "不使用第二跳": 0.8005
+    },
+    "Recall@5": {
+      "第二跳（扣 0 分）": 0.854,
+      "第二跳（扣 1 分）": 0.863,
+      "第二跳（扣 2 分）": 0.8635,
+      "第二跳（扣 3 分）": 0.8635,
+      "第二跳（扣 5 分）": 0.8635,
+      "不使用第二跳": 0.8615
+    }
+  }
+}
