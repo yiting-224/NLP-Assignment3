@@ -15,17 +15,18 @@
 
 **目前最終提交（Kaggle 上要勾選的兩份，截止前手動選）：**
 
-| 順序 | 檔案 | 產生它的 notebook | public | NEI 偏差 |
+| 順序 | 檔案 | 產生它的 notebook | public | NEI 比例 |
 |---|---|---|---|---|
-| 1 | `output/v7/submission_m6_037f63_sel_nei1.5.csv` | `NLP_HW3_NTHU_115062556v7.0.ipynb` | **0.881** | +1.5 |
-| 2 | `output/v7/submission_m6_037f63_sel_nei2.0.csv` | `NLP_HW3_NTHU_115062556v7.0.ipynb` | 0.876 | +2.0 |
+| 1 | `output/final/submission_v9_m12_share1.75.csv` | `NLP_HW3_NTHU_115062556.ipynb`（9e） | **0.889** | 對齊 v7 偏差 1.75（A 組 52.3%） |
+| 2 | `output/final/submission_v9_m12_share2.0.csv` | `NLP_HW3_NTHU_115062556.ipynb`（9e） | 0.888 | 對齊 v7 偏差 2.0（A 組 55.6%） |
 
-定稿 notebook：`NLP_HW3_NTHU_115062556.ipynb`（以 v8.0 為底 + Report；輸出到 `output/final/`，**尚未執行，其 CSV 皆未送過 Kaggle**）。
+定稿 notebook：`NLP_HW3_NTHU_115062556.ipynb`（v8.0 + 第 9 節 v9 + Report；**已用 hw3 kernel 從頭執行並保存輸出**（2026-11-17），輸出到 `output/final/`；兩份最終檔與送出的檔案 sha256 相同）。
+v8.1 備份：`NLP_HW3_NTHU_115062556v8.1.ipynb`（加入 v9 之前的定稿）。
 
-**最終 pipeline（v7.0 ＝ 定稿的主流程）：**
-1. 頁面檢索：標題子字串 + BM25（字元 bigram）+ 稠密檢索（`bge-small-zh-v1.5`）→ HistGradientBoosting 學習式排序（完整 wiki 119 萬頁），前 6 頁。
-2. 證據檢索：bigram 粗篩 32 句 → MacBERT cross-encoder 重排 → 證據句選擇器（HGB，dev 5 折 OOF）→ 前 5 句。
-3. 分類：6 成員集成（macbert、roberta、Erlangshen-110M-NLI、Erlangshen-330M-NLI × 2 種子、Qwen3-0.6B LoRA），claim + 前 4 句，log-softmax 等權平均 + NEI 偏差。
+**最終 pipeline（v9）：**
+1. 頁面檢索：標題子字串 + BM25（字元 bigram）+ 稠密檢索（`bge-small-zh-v1.5`）→ HistGradientBoosting 學習式排序（完整 wiki 119 萬頁），前 6 頁。（與 v7 相同）
+2. 證據檢索：bigram 粗篩 32 句 → MacBERT cross-encoder 重排 → 證據句選擇器（HGB，dev 5 折 OOF）→ 前 5 句。（與 v7 相同）
+3. 分類：**12 成員集成**（v7 的 5 個 + 完整版 Qwen3-0.6B LoRA + 附兄弟 claim 的 Qwen3-0.6B + 5 個在 Kaggle GPU 上訓練的成員：XLM-R-large-XNLI、Erlangshen-330M-NLI × 2（附兄弟 claim）、XLM-R-XNLI（附兄弟 claim）、mDeBERTa-v3-XNLI（附兄弟 claim）），claim + 前 4 句，log-softmax 等權平均 + NEI 偏差（依 test 的 NEI 預測比例對齊）。
 
 **dev 指標演進：**
 
@@ -40,6 +41,7 @@
 | v6.0 | `…v6.0.ipynb` | 0.9175 | 0.8780 | 0.7720 | 0.7330 |
 | v7.0 | `…v7.0.ipynb` | 0.9175 | 0.8780 | 0.7780 | 0.7370 |
 | v8.0 | `…v8.0.ipynb` | 0.9175 | 0.8780 | 0.7780 | 0.7370（主流程未變） |
+| v9 | `NLP_HW3_NTHU_115062556.ipynb` | 0.9175 | 0.8780 | **0.7963** | **0.7550** |
 
 （`…` ＝ `NLP_HW3_NTHU_115062556`。v0 因分類器捷徑 bug，dev 數字沒有保存；v1、v2 只保存了 accuracy（取自成員表 / 子集合表），當時的 CFEVER 沒有保存。v3.0 起的數字取自各版的 `metrics.json`。）
 
@@ -237,17 +239,50 @@
 | `submission_m6_037f63_sel_nei1.5.csv` | 同名 | NEI +1.5 | 0.881 |
 | `submission_v8_rr_equal_ref0.5_nei1.5.csv` | 同名 | v7 的 nei1.5 + refutes +0.5 | 0.875 |
 
+### v9 — 更強、更多樣的集成成員（成功；最終提交來源，2026-11-16～17）
+
+- **notebook**：`NLP_HW3_NTHU_115062556.ipynb` 第 9 節（9a～9f）；輸出 `output/final/`；實驗腳本在本機 `~/NLP-Assignment3/work/`（不在 repo 內）。
+- **錯誤分析的出發點**：dev 上「分類錯誤」的損失（約 22 pt）遠大於「證據不完整」（約 4–6 pt）；而且在 dev 上擬合的事後調整（偏差、校準、堆疊）都轉移不到 test。所以 v9 只加「用 train（＋一半 dev）訓練出來的新成員」，集成方式不變。
+- **採用規則（事先訂好）**：在 dev NEI 預測比例 0.42 / 0.46 / 0.50 下做配對檢定，三個比例都不變差、至少一個 z ≥ 2；public 不能比 v7 低超過雜訊（約 0.004）。
+- **test 組成**：A（id ≤ 31996，3000 題，真正的 CFEVER 題）、B（含「最喜歡」，1000 題，全部 NEI）、C（2000 題，抄自維基第 1 句或只改數字，模型約 99% 對）→ 分數差異幾乎都來自 A。
+- **兄弟 claim**：CFEVER 的 claim 成群產生（同一來源句的改寫，id 相鄰）；dev 2000 題 S/R 中 1970 題和 id ±20 內的另一題共用證據頁面。把 2～3 句最相似的兄弟 claim 放進模型輸入（只用 claim 文字與 id，不用標籤），是 v9 最有效的改動。
+- **Kaggle GPU**：私人 dataset `yiting224/cfever-hw3-evidence` ＋ 私人 notebook（16GB GPU），訓練程式見 notebook 9d 的 `KG_SCRIPT`。
+
+| 成員 | 訓練 | dev acc | 加入後（相對上一步，三個 NEI 比例） | 結論 |
+|---|---|---|---|---|
+| `qwen06`：Qwen3-0.6B + LoRA，全部訓練資料 2 epoch | 本機 | 0.7630 | 取代 pilot：+0.63 / +0.53 / +0.33 pt（z 2.7 / 2.3 / 1.3） | 採用 |
+| `xlmr_xnli_k6`：XLM-R-large-XNLI，完整微調、證據 6 句、cross-fit | Kaggle | 0.7707（OOF） | +0.10 / +0.30 / +0.30 | 採用 |
+| `e330_sib2_k4`：330M-NLI + 2 句兄弟 claim | Kaggle | 0.7697 | +0.63 / +0.10 / +0.67（z 2.5 / 0.4 / 2.6） | 採用 |
+| `xlmr_sib2_k4`：XLM-R-XNLI + 2 句兄弟 | Kaggle | 0.7657 | +0.17 / +0.43 / +0.27 | 採用 |
+| `e330_sib3_k6`：330M-NLI + 3 句兄弟、證據 6 句 | Kaggle | 0.7720 | 0.00 / −0.03 / +0.17 | 採用（與 xlmr_sib 一起才有效） |
+| `mdeberta_sib2_k4`：mDeBERTa-v3-XNLI + 2 句兄弟 | Kaggle | 0.7553 | +0.20 / +0.10 / +0.07 | 採用 |
+| `qwen06_sib`：Qwen3-0.6B + 2 句兄弟 | 本機 | **0.7753** | −0.07 / +0.30 / +0.50（z −0.4 / 1.7 / 2.7） | 採用（最終 12 成員） |
+| `e330_full_k6`：330M-NLI 完整微調、證據 6 句、cross-fit | Kaggle | 0.7670 | ±0（與現有 330M 一致率 90%） | 不採用 |
+| `qwen06_b`：第二顆完整版 Qwen（seed 33） | 本機 | 0.7643 | −0.07 / −0.03 / −0.20（與 qwen06 一致率 91%） | 不採用 |
+| `xlmr_sib2_cf`：XLM-R + 兄弟，cross-fit | Kaggle | 0.7767（OOF） | 加入 / 取代皆 ±0.1 | 不採用 |
+| `qwen_sib_cf`：Qwen + 兄弟，cross-fit | 本機 | 0.7697（OOF） | 加入 / 取代皆不穩定 | 不採用 |
+
+- **最終 12 成員集成**：dev accuracy 0.7780 → **0.7963**；相對 v7，dev CFEVER 在三個 NEI 比例下 +1.67 / +1.73 / +2.30 pt（z 4.2 / 4.2 / 5.6）。
+- **沒有採用的事後調整**：兩視角平均（TTA，部署比例下 dev 沒差別）、群集感知的證據選擇器（OOF Recall@5 0.875 → 0.879，public 差異太小）、群集感知的頁面排序（會動到 C 組）、兄弟 claim 堆疊 / 修正項（dev 上擬合）、refutes 偏差。
+- **NEI 比例**：更強的集成最佳點往「更多 NEI」移動，在對齊 v7 偏差 1.75～2.0 的比例形成平台；最終兩份取平台兩端。
+
+| 本帳號提交的 csv | 內容 | public |
+|---|---|---|
+| `output/v9/sub_v9a_m6tta_nei1.5.csv` | v7 6 成員 + 兩視角平均（TTA），NEI 1.5 | 0.877 |
+| `output/v9/sub_v9b_m6tta_sibsel_nei1.5.csv` | v9a + 群集感知選擇器 | 0.878 |
+| `output/v9/sub_v9c_m6tta_sibcorr_sibsel_share1.5.csv` | v9b + 兄弟 claim 修正項 | 0.879 |
+| `output/v9/sub_v9o_m10_sib_members_share1.5.csv` | 10 成員，NEI 比例對齊 v7 1.5 | 0.886 |
+| `output/v9/sub_v9p_m11_all_share1.5.csv` | 11 成員，對齊 1.5 | 0.884 |
+| `output/v9/sub_v9q_m12_all_share1.5.csv`（＝ `final/submission_v9_m12_share1.5.csv`） | 12 成員，對齊 1.5 | 0.883 |
+| `output/final/submission_v9_m12_share1.75.csv` | 12 成員，對齊 1.75（**最終之一**） | **0.889** |
+| `output/final/submission_v9_m12_share2.0.csv` | 12 成員，對齊 2.0（**最終之一**） | 0.888 |
+| `output/final/submission_v9_m12_share1.875.csv` | 12 成員，對齊 1.875 | 0.888 |
+| `output/final/submission_v9_m12_share1.25.csv`／`2.25` | 12 成員 NEI 比例掃描 | 【待提交】 |
+
 ### 定稿 — `NLP_HW3_NTHU_115062556.ipynb`（Report 版）
 
-- **內容**：以 v8.0 為底；更新開頭說明與 GenAI 聲明；輸出資料夾 `output/final/`；NEI 偏差掃描擴充到 0.0～2.5（會產生最終兩份提交的檔案）；v8 一節標明為負面結果；最後一個 cell 是 Report（題目逐字取自 sample code，只在 `Answer:` 後面填內容）。
-- **狀態**：已用模擬環境跑過所有程式 cell 的流程；**真實模型與 GPU 尚未執行**，所以 notebook 內沒有輸出，下列 CSV 全部【未測】。
-- 預期 `final/submission_m6_037f63_sel_nei1.5.csv` / `nei2.0.csv` 與 v7 的同名檔內容相同，需要用 `sha256sum` 驗證（驗證前以 v7 的檔案為準）。
-
-| 程式輸出的 csv（`output/final/`） | 內容 | public |
-|---|---|---|
-| `submission.csv`、`submission_nocal.csv`、`submission_m6_037f63_sel_cal.csv` | 校準 / 未校準 | 【未測】 |
-| `submission_m6_037f63_sel_nei0.0.csv` … `_nei2.5.csv`（0.0、0.5、1.0、1.5、2.0、2.5） | 全域 NEI 偏差 | 【未測】 |
-| `submission_v8_*.csv`（v8 一節的 refutes 偏差檔等） | v8 實驗檔 | 【未測】 |
+- **內容**：v8.0 的全部內容 + 第 9 節（v9）；開頭說明、GenAI 聲明（Sonnet 5.5 / Opus 5.5）、Report 都已更新；最後一個 cell 是 Report（題目逐字取自 sample code，只在 `Answer:` 後面填內容；已用腳本檢查格式）。
+- **狀態**：2026-11-17 已用 hw3 kernel（`jupyter nbconvert --execute`）從頭執行並保存輸出，23 個程式 cell 無錯誤；`output/final/submission_v9_m12_share{1.5,1.75,1.875,2.0,2.25}.csv` 與 `output/v9/` 中送出的對應檔 sha256 相同。
 
 ---
 
@@ -287,7 +322,16 @@
 
 | public | 檔案 | 版本 |
 |---|---|---|
-| **0.881** | `submission_m6_037f63_sel_nei1.5.csv`（v7；v8 同名檔也是 0.881） | v7.0 / v8.0 |
+| **0.889** | `final/submission_v9_m12_share1.75.csv`（12 成員，**最終之一**） | v9 |
+| 0.888 | `final/submission_v9_m12_share2.0.csv`（12 成員，**最終之一**） | v9 |
+| 0.888 | `final/submission_v9_m12_share1.875.csv` | v9 |
+| 0.886 | `sub_v9o_m10_sib_members_share1.5.csv`（10 成員） | v9 |
+| 0.884 | `sub_v9p_m11_all_share1.5.csv`（11 成員） | v9 |
+| 0.883 | `sub_v9q_m12_all_share1.5.csv`（12 成員 ＝ `final/submission_v9_m12_share1.5.csv`） | v9 |
+| 0.881 | `submission_m6_037f63_sel_nei1.5.csv`（v7；v8 同名檔也是 0.881） | v7.0 / v8.0 |
+| 0.879 | `sub_v9c_m6tta_sibcorr_sibsel_share1.5.csv` | v9 |
+| 0.878 | `sub_v9b_m6tta_sibsel_nei1.5.csv` | v9 |
+| 0.877 | `sub_v9a_m6tta_nei1.5.csv` | v9 |
 | 0.878 | `submission_m5_d13d8f_sel_nei1.5.csv`（v5.0 與 v6.0 同分） | v5.0 / v6.0 |
 | 0.876 | `submission_m6_037f63_sel_nei2.0.csv` | v7.0 |
 | 0.876 | `submission_m6_037f63_sel_Anei2.0.csv` | v7.0 |
@@ -313,7 +357,7 @@
 | 0.809 | `submission_nocalv1.csv` | v1 |
 | 0.716 | `submissionv0.csv` | v0 |
 
-（第一名 public 約 0.890，2026-11-09 時。）
+（第一名 public 約 0.890，2026-11-09 時；2026-11-17 時第一名 0.902、第五名 0.898。）
 
 ---
 
@@ -323,4 +367,7 @@
 2. **集成的增益是真的，照 public 挑檔不是**：成員數、NLI 預訓練、選擇器的提升都能在 dev 上用配對檢定驗證；NEI 偏差 1.5 還是 2.0 的差距小於一個標準誤，所以最終兩份各留一份對沖。
 3. **類別比例相關的參數不能只看 dev**：dev 三類各 1/3，test A 組的 NEI 比例更高（偏差 1.5 時 A 組被判成 NEI 的比例 48.8%）。dev 校準出來的 NEI 偏差（+1.0）、refutes 偏差（+0.5～0.75）都沒能轉移到 public。
 4. **每次改動都用配對檢定（好 / 壞題數）判斷是不是雜訊**，而不是只看分數的小數點。
-5. private 分數粗估 0.87～0.88，公布前不下結論。
+5. **在 dev 上擬合的事後調整一律不可靠**（v9）：兩視角平均、兄弟 claim 堆疊、refutes 偏差在 dev 都有效，public 卻沒有進步；同樣的兄弟 claim 資訊改成「放進模型輸入、用 train 訓練」才同時在 dev 與 public 進步。
+6. **集成需要「錯誤不同」的成員**（v9）：同一個模型只換 seed（一致率 90% 以上）幾乎沒有幫助；不同的模型家族（XLM-R、mDeBERTa、Qwen）或不同的輸入資訊（兄弟 claim）才有幫助。
+7. **NEI 最佳比例會隨集成強度改變**（v9）：v7 的最佳點是偏差 1.5，12 成員集成在對齊 1.75～2.0 的比例形成平台，所以換集成後要重新掃描，而不是沿用舊的偏差值。
+8. private 分數公布前不下結論；最終兩份取平台兩端，private 取兩者較高者。

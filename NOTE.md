@@ -11,20 +11,24 @@
 
 ## 0. 繳交前必做清單（照順序打勾）
 
-截止前最後一次檢查，**每一項都要確認**。狀態是 2026-11-16 時的狀態。
+截止前最後一次檢查，**每一項都要確認**。狀態是 2026-11-17 時的狀態。
 
 | 狀態 | 項目 | 說明 |
 |---|---|---|
-| ☐ | 在 VS Code 對 `NLP_HW3_NTHU_115062556.ipynb` 選 `hw3` kernel 後 **Run All**，把輸出留在檔案裡 | 都有快取，預期數分鐘；輸出會寫到 `output/final/` |
-| ☐ | 用 `sha256sum` 確認 `output/final/` 的 `nei1.5`、`nei2.0` 與 `output/v7/` 同名檔相同 | 確認定稿 notebook 能重現最終提交 |
-| ☐ | **在 Kaggle 手動選 2 份最終提交**（見 §3），選前確認分數欄是 0.881 與 0.876 | 截止：2026-11-23 12:00 |
+| ☑ | `NLP_HW3_NTHU_115062556.ipynb` 用 `hw3` kernel 從頭執行，輸出已保存在檔案裡 | 2026-11-17 以 `jupyter nbconvert --execute` 執行，23 個程式 cell 無錯誤 |
+| ☑ | 用 `sha256sum` 確認 `output/final/submission_v9_m12_share*.csv` 與 `output/v9/` 送出的檔案相同 | share 1.5 / 1.75 / 1.875 / 2.0 / 2.25 全部相同 |
+| ☑ | **用本人帳號送出** `output/final/submission_v9_m12_share1.75.csv`、`share2.0.csv`（最終兩份必須是本帳號的提交） | 2026-11-19 已送出：0.889 / 0.888（另送 1.875：0.888） |
+| ☐ | **在 Kaggle 手動選 2 份最終提交**（見 §3.2） | 截止：2026-11-23 12:00 |
+| ☐ | （建議）用本帳號送出 `share1.25`、`share2.25`、`output/v9/sub_v9o_m10_share1.75.csv`，讓 Report 引用的掃描分數都在本帳號上；送出後補回 README 的【待提交】 | Report 的 public 0.889 已與本帳號一致 |
 | ☐ | Report 內容再逐字檢查一次（特別是 Q5 的聲明是否屬實） | 見 §2 Report 規定 |
+| ☐ | （建議）寄信向助教確認 `joeddav/xlm-roberta-large-xnli`、`MoritzLaurer/mDeBERTa-v3-base-xnli-multilingual-nli-2mil7` 也屬於「已微調過的 checkpoint、< 1B 可用」 | 11/14 的回覆是針對 Erlangshen；寄信由本人決定 |
+| ☐ | Windows 端複本同步定稿 notebook | 見 §6 |
 | ☐ | zip 裡**只放** `NLP_HW3_NTHU_115062556.ipynb`（沒有其他檔案、沒有資料夾） | 見 §1 |
 | ☐ | 檔名逐字檢查（學校 `NTHU`、學號 `115062556`、副檔名） | 錯一個 −5 |
 | ☐ | 上傳 NTU COOL | 作業說明寫「三週」，**實際截止時間以 NTU COOL 頁面為準** |
 | ☐ | 11/23 12:00 公布 private 後，補填 Report 的 `Your private leaderboard score:` | 在 COOL 截止前補，見 §2 |
 | ☑ | Report 題目與格式未更動（用腳本逐字比對 sample code 的 Report cell） | 5 題逐字保留、`Answer:` 5 個 |
-| ☑ | Report 已寫 Kaggle username 與 public 分數 | 17568160 / 0.881 |
+| ☑ | Report 已寫 Kaggle username 與 public 分數 | 17568160 / 0.889 |
 | ☑ | GenAI 使用聲明同時寫在 **Report** 與 **程式註解**（notebook 開頭說明與第一個 code cell 的註解） | 見 §1 |
 | ☑ | 沒有呼叫外部 API；每個模型 < 1B 參數；只用 cfever 資料訓練 | 見 §3 |
 
@@ -116,11 +120,12 @@
 
 ### 3.2 Kaggle 最終提交（**截止前必須手動選**）
 - **最多選 2 份** submission 作為最終計分版本。
-- **最終兩份（已決定，2026-11-14）**：
-  1. `output/v7/submission_m6_037f63_sel_nei1.5.csv` — public **0.881**
-  2. `output/v7/submission_m6_037f63_sel_nei2.0.csv` — public 0.876
-- 在 Kaggle 的 "Select final submissions" 頁面是按提交時間與檔名列出，**選前先看分數欄是 0.881 與 0.876**。
-- v8 的 refutes 偏差檔（0.875）**不選**。
+- **最終兩份（2026-11-17 決定，取代 11-14 的 v7 兩份）**：
+  1. `output/final/submission_v9_m12_share1.75.csv` — 12 成員集成，NEI 比例對齊 v7 偏差 1.75（A 組 52.3%）
+  2. `output/final/submission_v9_m12_share2.0.csv` — 同上，對齊 v7 偏差 2.0（A 組 55.6%）
+  - 理由：12 成員集成的 NEI 比例在 1.75～2.0 形成平台、2.25 開始下降；兩份取平台兩端，private 取兩者較高者。
+- 這兩份**必須先用本人帳號送出**，才能在 "Select final submissions" 頁面被勾選；勾選前先看檔名與分數欄。
+- v7 的兩份（0.881 / 0.876）與 v8 的 refutes 偏差檔（0.875）**不再選**。
 
 ### 3.3 討論區（2026-11-11，「Starter Code 的修改範圍」）
 - sample code **只是範例**，**只要合乎 HW3 的規定（bullets）即可任意修改**。
@@ -141,10 +146,13 @@
 | `hfl/chinese-macbert-base` | 約 102M | 句子重排器、分類器成員 |
 | `hfl/chinese-roberta-wwm-ext` | 約 102M | 分類器成員（v6 另用作第二個重排器） |
 | `IDEA-CCNL/Erlangshen-Roberta-110M-NLI` | 約 110M | 分類器成員 |
-| `IDEA-CCNL/Erlangshen-Roberta-330M-NLI` | 約 326M | 分類器成員（兩個種子） |
-| `Qwen/Qwen3-0.6B-Base`（+ LoRA） | 約 0.6B | 分類器成員（pilot） |
+| `IDEA-CCNL/Erlangshen-Roberta-330M-NLI` | 約 326M | 分類器成員（本機兩個種子；Kaggle 上另訓練 2 個附兄弟 claim 的版本） |
+| `Qwen/Qwen3-0.6B-Base`（+ LoRA） | 約 0.6B | 分類器成員（完整版 + 附兄弟 claim 版；v7 的 pilot 已被取代） |
+| `joeddav/xlm-roberta-large-xnli` | 約 560M | 分類器成員（v9，Kaggle GPU；2 個版本） |
+| `MoritzLaurer/mDeBERTa-v3-base-xnli-multilingual-nli-2mil7` | 約 278M | 分類器成員（v9，Kaggle GPU） |
 
 - 未呼叫任何外部 API；訓練資料只用 cfever 的 train / dev / wiki（模型本身的預訓練資料不計，已向助教確認）。
+- Kaggle Notebook GPU 只當作運算資源（私人 notebook + 私人 dataset `yiting224/cfever-hw3-evidence`，內容是由本 notebook 匯出的 cfever 資料與檢索結果），不是推論 API。
 
 ---
 
@@ -152,7 +160,7 @@
 
 | 位置 | 要求 | 目前狀態 |
 |---|---|---|
-| **Report 的 Q5** | 說明使用了哪些 Generative AI、做了什麼、使用的預訓練模型、參考資料 | ✅ 已寫（Claude Sonnet 5.5：架構設計、程式碼、統計分析、除錯、Report；列出所有模型與助教回覆） |
+| **Report 的 Q5** | 說明使用了哪些 Generative AI、做了什麼、使用的預訓練模型、參考資料 | ✅ 已寫（Claude Sonnet 5.5（v0–v8）與 Opus 5.5（v9）：架構設計、程式碼、Kaggle GPU 訓練程式、統計分析、除錯、Report；列出所有模型（含 XLM-R / mDeBERTa XNLI）與助教回覆） |
 | **程式註解（Code comments）** | 在程式裡也要說明 | ✅ notebook 開頭說明與第 1 個 code cell 的註解（「Generative AI 使用聲明…」） |
 | **網路來源的連結** | 參考的程式碼 / 資料要給連結 | ✅ CFEVER 資料集與論文（`https://github.com/IKMLab/CFEVER-data`）、Hugging Face 各模型 model card、作業 sample code |
 
