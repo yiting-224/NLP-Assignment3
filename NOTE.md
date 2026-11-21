@@ -18,7 +18,7 @@
 | ☑ | `NLP_HW3_NTHU_115062556.ipynb` 用 `hw3` kernel 從頭執行，輸出已保存在檔案裡 | 2026-11-21 重構為 `sample_code.ipynb` 的 38 格架構（Markdown 不動、補充只寫在 Report），以 `jupyter nbconvert --execute` 重新執行，19 個 code cell 無錯誤 |
 | ☑ | 用 `sha256sum` 確認 `output/final/submission_v9_m12_share*.csv` 與 `output/v9/` 送出的檔案相同 | 2026-11-21 重跑後 share 1.25 / 1.5 / 1.75 / 1.875 / 2.0 / 2.25 六份 sha256 與重構前全部相同 |
 | ☑ | **用本人帳號送出** `output/final/submission_v9_m12_share1.75.csv`、`share2.0.csv`（最終兩份必須是本帳號的提交） | 2026-11-19 已送出：0.889 / 0.888（另送 1.875：0.888） |
-| ☐ | **在 Kaggle 手動選 2 份最終提交**（見 §3.2） | 截止：2026-11-23 12:00 |
+| ☑ | **在 Kaggle 手動選 2 份最終提交**（見 §3.2） | 2026-11-21 本人已勾選 `submission_v9_m12_share1.75.csv`、`submission_v9_m12_share2.0.csv`（截止：2026-11-23 12:00） |
 | ☐ | （建議）用本帳號送出 `share1.25`、`share2.25`、`output/v9/sub_v9o_m10_share1.75.csv`，讓 Report 引用的掃描分數都在本帳號上；送出後補回 README 的【待提交】 | Report 的 public 0.889 已與本帳號一致 |
 | ☐ | Report 內容再逐字檢查一次（特別是 Q5 的聲明是否屬實） | 見 §2 Report 規定 |
 | ☐ | （建議）寄信向助教確認 `joeddav/xlm-roberta-large-xnli`、`MoritzLaurer/mDeBERTa-v3-base-xnli-multilingual-nli-2mil7` 也屬於「已微調過的 checkpoint、< 1B 可用」 | 11/14 的回覆是針對 Erlangshen；寄信由本人決定 |
@@ -29,6 +29,7 @@
 | ☐ | 11/23 12:00 公布 private 後，補填 Report 的 `Your private leaderboard score:` | 在 COOL 截止前補，見 §2 |
 | ☑ | Report 題目與格式未更動（用腳本逐字比對 sample code 的 Report cell） | 5 題逐字保留、`Answer:` 5 個 |
 | ☑ | Report 已寫 Kaggle username 與 public 分數 | 17568160 / 0.889 |
+| ☑ | **Report 以英文撰寫**（2026-11-21 由中文版翻成英文；題目行與 sample 逐字相同，只有人名式專有名詞「最喜歡」等原文片語保留中文） | 英文版產生腳本在本機 `work/build_report_en.py`（不在 repo） |
 | ☑ | GenAI 使用聲明寫在 **Report 的 Q5**（notebook 開頭不放說明，Markdown 保持 sample 原文），並在第一個 code cell 留兩行**程式註解**指向 Q5 | 見 §1 |
 | ☑ | 沒有呼叫外部 API；每個模型 < 1B 參數；只用 cfever 資料訓練 | 見 §3 |
 
