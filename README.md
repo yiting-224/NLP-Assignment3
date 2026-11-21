@@ -17,11 +17,11 @@
 
 | 順序 | 檔案 | 產生它的 notebook | public | NEI 比例 |
 |---|---|---|---|---|
-| 1 | `output/final/submission_v9_m12_share1.75.csv` | `NLP_HW3_NTHU_115062556.ipynb`（9e） | **0.889** | 對齊 v7 偏差 1.75（A 組 52.3%） |
-| 2 | `output/final/submission_v9_m12_share2.0.csv` | `NLP_HW3_NTHU_115062556.ipynb`（9e） | 0.888 | 對齊 v7 偏差 2.0（A 組 55.6%） |
+| 1 | `output/final/submission_v9_m12_share1.75.csv` | `NLP_HW3_NTHU_115062556.ipynb`（最後一個 code cell：Submission） | **0.889** | 對齊 v7 偏差 1.75（A 組 52.3%） |
+| 2 | `output/final/submission_v9_m12_share2.0.csv` | `NLP_HW3_NTHU_115062556.ipynb`（最後一個 code cell：Submission） | 0.888 | 對齊 v7 偏差 2.0（A 組 55.6%） |
 
-定稿 notebook：`NLP_HW3_NTHU_115062556.ipynb`（v8.0 + 第 9 節 v9 + Report；**已用 hw3 kernel 從頭執行並保存輸出**（2026-11-17），輸出到 `output/final/`；兩份最終檔與送出的檔案 sha256 相同）。
-v8.1 備份：`NLP_HW3_NTHU_115062556v8.1.ipynb`（加入 v9 之前的定稿）。
+定稿 notebook：`NLP_HW3_NTHU_115062556.ipynb`（**2026-11-21 重構版**：沿用 `sample_code.ipynb` 的 38 格架構、Markdown 原文不動，19 個 code cell 放 v9 的最終 pipeline；補充說明只寫在最後的 Report；**已用 hw3 kernel 從頭執行並保存輸出**，輸出到 `output/final/`；六份 `submission_v9_m12_share*.csv` 重跑後 sha256 與重構前完全相同）。
+重構前的版本（自訂架構：v8.0 + 第 9 節 v9 + Report，2026-11-17 執行）保留在 git commit `047ce6e`。
 
 **最終 pipeline（v9）：**
 1. 頁面檢索：標題子字串 + BM25（字元 bigram）+ 稠密檢索（`bge-small-zh-v1.5`）→ HistGradientBoosting 學習式排序（完整 wiki 119 萬頁），前 6 頁。（與 v7 相同）
@@ -241,12 +241,12 @@ v8.1 備份：`NLP_HW3_NTHU_115062556v8.1.ipynb`（加入 v9 之前的定稿）�
 
 ### v9 — 更強、更多樣的集成成員（成功；最終提交來源，2026-11-16～17）
 
-- **notebook**：`NLP_HW3_NTHU_115062556.ipynb` 第 9 節（9a～9f）；輸出 `output/final/`；實驗腳本在本機 `~/NLP-Assignment3/work/`（不在 repo 內）。
+- **notebook**：最終流程在 `NLP_HW3_NTHU_115062556.ipynb`（重構後；原第 9 節 9a～9f 的實驗在 commit `047ce6e` 的版本裡，9a / v8 / v7 的 csv 寫出程式沒有放進重構版）；輸出 `output/final/`；實驗腳本在本機 `~/NLP-Assignment3/work/`（不在 repo 內）。
 - **錯誤分析的出發點**：dev 上「分類錯誤」的損失（約 22 pt）遠大於「證據不完整」（約 4–6 pt）；而且在 dev 上擬合的事後調整（偏差、校準、堆疊）都轉移不到 test。所以 v9 只加「用 train（＋一半 dev）訓練出來的新成員」，集成方式不變。
 - **採用規則（事先訂好）**：在 dev NEI 預測比例 0.42 / 0.46 / 0.50 下做配對檢定，三個比例都不變差、至少一個 z ≥ 2；public 不能比 v7 低超過雜訊（約 0.004）。
 - **test 組成**：A（id ≤ 31996，3000 題，真正的 CFEVER 題）、B（含「最喜歡」，1000 題，全部 NEI）、C（2000 題，抄自維基第 1 句或只改數字，模型約 99% 對）→ 分數差異幾乎都來自 A。
 - **兄弟 claim**：CFEVER 的 claim 成群產生（同一來源句的改寫，id 相鄰）；dev 2000 題 S/R 中 1970 題和 id ±20 內的另一題共用證據頁面。把 2～3 句最相似的兄弟 claim 放進模型輸入（只用 claim 文字與 id，不用標籤），是 v9 最有效的改動。
-- **Kaggle GPU**：私人 dataset `yiting224/cfever-hw3-evidence` ＋ 私人 notebook（16GB GPU），訓練程式見 notebook 9d 的 `KG_SCRIPT`。
+- **Kaggle GPU**：私人 dataset `yiting224/cfever-hw3-evidence` ＋ 私人 notebook（16GB GPU），訓練程式見 notebook「Classification → Training」code cell 的 `KG_SPECS` / `KG_SCRIPT`。
 
 | 成員 | 訓練 | dev acc | 加入後（相對上一步，三個 NEI 比例） | 結論 |
 |---|---|---|---|---|
@@ -281,8 +281,9 @@ v8.1 備份：`NLP_HW3_NTHU_115062556v8.1.ipynb`（加入 v9 之前的定稿）�
 
 ### 定稿 — `NLP_HW3_NTHU_115062556.ipynb`（Report 版）
 
-- **內容**：v8.0 的全部內容 + 第 9 節（v9）；開頭說明、GenAI 聲明（Sonnet 5.5 / Opus 5.5）、Report 都已更新；最後一個 cell 是 Report（題目逐字取自 sample code，只在 `Answer:` 後面填內容；已用腳本檢查格式）。
-- **狀態**：2026-11-17 已用 hw3 kernel（`jupyter nbconvert --execute`）從頭執行並保存輸出，23 個程式 cell 無錯誤；`output/final/submission_v9_m12_share{1.5,1.75,1.875,2.0,2.25}.csv` 與 `output/v9/` 中送出的對應檔 sha256 相同。
+- **內容**：2026-11-21 起依 `sample_code.ipynb` 的 38 格架構重構（Markdown 全部逐字保留，已用腳本比對；19 個 code cell 依原位置放入 v9 最終 pipeline 的程式，程式內容取自重構前的定稿，沒有改動邏輯）。所有補充說明都只寫在最後一個 cell（Report，題目逐字取自 sample code，只在 `Answer:` 後面填內容）；Generative AI 使用聲明寫在 Report Q5，第一個 code cell 只留兩行指向 Q5 的程式註解（課程要求程式註解也要說明）。重構版不含 v8、9a（兄弟 claim 選擇器）與 v7 csv 的程式；Report 的 Q3 / Q4 已改為對應的說明。
+- **狀態**：2026-11-21 以 hw3 kernel（`jupyter nbconvert --execute`，CPU，因 GPU 被其他工作占用）從頭執行並保存輸出，19 個 code cell 無錯誤；`output/final/submission_v9_m12_share{1.25,1.5,1.75,1.875,2.0,2.25}.csv` 重新產生後 sha256 與重構前（2026-11-17 版）逐一相同，所以送出的檔案仍是 0.889 / 0.888 那兩份。dev 指標（notebook 輸出）：頁面 Recall@5 0.9175、證據 Recall@5 0.8780、分類 accuracy 0.7963；dev CFEVER 在部署偏差 1.981 / 2.269（對齊 v7 的 1.75 / 2.0）下為 0.7337 / 0.7143。
+- **Report**：private score 欄位留白，公布後補填。
 
 ---
 

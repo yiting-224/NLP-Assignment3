@@ -11,12 +11,12 @@
 
 ## 0. 繳交前必做清單（照順序打勾）
 
-截止前最後一次檢查，**每一項都要確認**。狀態是 2026-11-17 時的狀態。
+截止前最後一次檢查，**每一項都要確認**。狀態是 2026-11-21 時的狀態。
 
 | 狀態 | 項目 | 說明 |
 |---|---|---|
-| ☑ | `NLP_HW3_NTHU_115062556.ipynb` 用 `hw3` kernel 從頭執行，輸出已保存在檔案裡 | 2026-11-17 以 `jupyter nbconvert --execute` 執行，23 個程式 cell 無錯誤 |
-| ☑ | 用 `sha256sum` 確認 `output/final/submission_v9_m12_share*.csv` 與 `output/v9/` 送出的檔案相同 | share 1.5 / 1.75 / 1.875 / 2.0 / 2.25 全部相同 |
+| ☑ | `NLP_HW3_NTHU_115062556.ipynb` 用 `hw3` kernel 從頭執行，輸出已保存在檔案裡 | 2026-11-21 重構為 `sample_code.ipynb` 的 38 格架構（Markdown 不動、補充只寫在 Report），以 `jupyter nbconvert --execute` 重新執行，19 個 code cell 無錯誤 |
+| ☑ | 用 `sha256sum` 確認 `output/final/submission_v9_m12_share*.csv` 與 `output/v9/` 送出的檔案相同 | 2026-11-21 重跑後 share 1.25 / 1.5 / 1.75 / 1.875 / 2.0 / 2.25 六份 sha256 與重構前全部相同 |
 | ☑ | **用本人帳號送出** `output/final/submission_v9_m12_share1.75.csv`、`share2.0.csv`（最終兩份必須是本帳號的提交） | 2026-11-19 已送出：0.889 / 0.888（另送 1.875：0.888） |
 | ☐ | **在 Kaggle 手動選 2 份最終提交**（見 §3.2） | 截止：2026-11-23 12:00 |
 | ☐ | （建議）用本帳號送出 `share1.25`、`share2.25`、`output/v9/sub_v9o_m10_share1.75.csv`，讓 Report 引用的掃描分數都在本帳號上；送出後補回 README 的【待提交】 | Report 的 public 0.889 已與本帳號一致 |
@@ -29,7 +29,7 @@
 | ☐ | 11/23 12:00 公布 private 後，補填 Report 的 `Your private leaderboard score:` | 在 COOL 截止前補，見 §2 |
 | ☑ | Report 題目與格式未更動（用腳本逐字比對 sample code 的 Report cell） | 5 題逐字保留、`Answer:` 5 個 |
 | ☑ | Report 已寫 Kaggle username 與 public 分數 | 17568160 / 0.889 |
-| ☑ | GenAI 使用聲明同時寫在 **Report** 與 **程式註解**（notebook 開頭說明與第一個 code cell 的註解） | 見 §1 |
+| ☑ | GenAI 使用聲明寫在 **Report 的 Q5**（notebook 開頭不放說明，Markdown 保持 sample 原文），並在第一個 code cell 留兩行**程式註解**指向 Q5 | 見 §1 |
 | ☑ | 沒有呼叫外部 API；每個模型 < 1B 參數；只用 cfever 資料訓練 | 見 §3 |
 
 ---
@@ -161,7 +161,7 @@
 | 位置 | 要求 | 目前狀態 |
 |---|---|---|
 | **Report 的 Q5** | 說明使用了哪些 Generative AI、做了什麼、使用的預訓練模型、參考資料 | ✅ 已寫（Claude Sonnet 5.5（v0–v8）與 Opus 5.5（v9）：架構設計、程式碼、Kaggle GPU 訓練程式、統計分析、除錯、Report；列出所有模型（含 XLM-R / mDeBERTa XNLI）與助教回覆） |
-| **程式註解（Code comments）** | 在程式裡也要說明 | ✅ notebook 開頭說明與第 1 個 code cell 的註解（「Generative AI 使用聲明…」） |
+| **程式註解（Code comments）** | 在程式裡也要說明 | ✅ 第 1 個 code cell 開頭兩行註解（「Generative AI 使用聲明…」，指向 Report Q5）；notebook 的 Markdown 不放聲明 |
 | **網路來源的連結** | 參考的程式碼 / 資料要給連結 | ✅ CFEVER 資料集與論文（`https://github.com/IKMLab/CFEVER-data`）、Hugging Face 各模型 model card、作業 sample code |
 
 > ⚠️ Report Q5 寫了「所有程式由本人實際執行」「Report 內容由本人對照輸出檢查過」。**這些必須是事實**——繳交前請你自己確實檢查過 Report 與 notebook。
