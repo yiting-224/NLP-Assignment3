@@ -5,6 +5,7 @@
 這份文件記錄**所有實驗（成功與失敗）**、每個實驗對應的 notebook 檔名、每個 notebook 輸出了哪些 `.csv`，以及各 `.csv` 在 Kaggle 的 public score。
 **從未上傳 Kaggle 的 `.csv`，public score 一律填【未測】。**
 
+- **分數後面標 † 的**：該份 `.csv` 的 public 分數**不是本帳號（17568160）送出的**，只當實驗參考；Report 只引用本帳號的分數。沒有標記的 public 分數都可以在本帳號的 Kaggle 提交紀錄（25 筆，2026-11-23 用 Kaggle CLI 核對）找到。
 - 作業規定與提醒請看 `NOTE.md`。
 - 分數＝Kaggle FEVER score（與 notebook 內的 CFEVER 相同）。dev 指標都在 dev 3000 題（supports / refutes / NEI 各 1000）上計算。
 - 完整的 Report 草稿存在專案 `claude/hw3_report_draft.md`。
@@ -89,26 +90,26 @@
 
 - **notebook**：`NLP_HW3_NTHU_115062556v2.ipynb`
 - **改動**：分類器改成集成（`macbert_base` + `roberta_base`），log-softmax 後等權平均。
-- **結果**：dev accuracy 0.7137 → 0.7353；public 0.810，與 v1 未校準版（0.809）相比只多約 0.1 pt（v1 的 0.833 是校準版，不能直接比較）。
+- **結果**：dev accuracy 0.7137 → 0.7353；public 0.810†，與 v1 未校準版（0.809）相比只多約 0.1 pt（v1 的 0.833 是校準版，不能直接比較）。
 
 | 程式輸出的 csv（`output/`） | 本機保存檔名 | 內容 | public |
 |---|---|---|---|
-| `submission.csv` 與 `submission_nocal.csv` 兩者之一 | `submissionv2.csv` | 依專案筆記為 2 成員未校準版 | 0.810 |
+| `submission.csv` 與 `submission_nocal.csv` 兩者之一 | `submissionv2.csv` | 依專案筆記為 2 成員未校準版 | 0.810† |
 | 另一個（校準版或未校準版，未保存） | — | — | 【未測】 |
 
 ### v3.0 — 加入 NLI 預訓練成員（成功）＋ NEI 偏差掃描
 
 - **notebook**：`NLP_HW3_NTHU_115062556v3.0.ipynb`
 - **改動**：加入 `erlangshen_110m`（`IDEA-CCNL/Erlangshen-Roberta-110M-NLI`，輸入把證據放前面、分類頭依 蘊含/矛盾/中立 → supports/refutes/NEI 重排）。新增「NEI 偏差掃描」：對 NOT ENOUGH INFO 的 logit 加偏差並各存一份。
-- **結果**：成員 acc：110m 0.7470（同為 RoBERTa-base 規模，比 `roberta_base` 0.7227 多 2.4 pt）；3 成員集成 dev accuracy 0.7573、CFEVER 0.7130；dev 校準未通過交叉驗證，不採用（偏差 [0,0,0]）。public 隨 NEI 偏差上升：0 → 0.824、0.5 → 0.844、1.0 → 0.852、1.5 → 0.861。
+- **結果**：成員 acc：110m 0.7470（同為 RoBERTa-base 規模，比 `roberta_base` 0.7227 多 2.4 pt）；3 成員集成 dev accuracy 0.7573、CFEVER 0.7130；dev 校準未通過交叉驗證，不採用（偏差 [0,0,0]）。public 隨 NEI 偏差上升：0 → 0.824†、0.5 → 0.844†、1.0 → 0.852、1.5 → 0.861†。
 
 | 程式輸出的 csv（`output/`） | 本機保存檔名 | 內容 | public |
 |---|---|---|---|
-| `submission.csv` | `submissionv3.csv` | NEI 偏差 0 | 0.824 |
+| `submission.csv` | `submissionv3.csv` | NEI 偏差 0 | 0.824† |
 | `submission_nocal.csv` | — | 與 `submission.csv` 相同（未採用校準） | 【未測】 |
-| `submission_nei0.5.csv` | `submission_nei0.5v3.csv` | NEI +0.5 | 0.844 |
+| `submission_nei0.5.csv` | `submission_nei0.5v3.csv` | NEI +0.5 | 0.844† |
 | `submission_nei1.0.csv` | `submission_nei1.0v3.csv` | NEI +1.0 | 0.852 |
-| `submission_nei1.5.csv` | `submission_nei1.5v3.csv` | NEI +1.5 | 0.861 |
+| `submission_nei1.5.csv` | `submission_nei1.5v3.csv` | NEI +1.5 | 0.861† |
 | `submission_nei2.0.csv` | — | NEI +2.0（v3.0 版） | 【未測】 |
 | `submission_nei3.0.csv` | — | NEI +3.0（v3.0 版） | 【未測】 |
 
@@ -118,7 +119,7 @@
 - **改動**：加入 `erlangshen_330m`（`IDEA-CCNL/Erlangshen-Roberta-330M-NLI`，約 326M）。4GB 顯存放不下完整 AdamW，改用 Adafactor、凍結 embedding 與前 8 層（OOM 時自動多凍 4 層重試）。
 - **結果**：330M 單模型 acc 0.7663（比 110M 多 1.9 pt）；4 成員 dev accuracy 0.7723、CFEVER 0.7280；dev 校準（偏差 [0, 0.75, 1.0]）通過交叉驗證 → 採用，但 **public 只有 0.851**，反而低於同模型的 NEI +2.0（0.873）。
 - **教訓**：dev 上校準出來的 NEI 偏差（+1.0）明顯低估 public 偏好的偏差（約 +1.5～2.0）——dev 與 test 的類別比例不同（見「教訓」）。
-- 這一版的 NEI 偏差曲線：2.0 → 0.873、3.0 → 0.854，峰值在 2.0 附近。
+- 這一版的 NEI 偏差曲線：2.0 → 0.873、3.0 → 0.854†，峰值在 2.0 附近。
 
 | 程式輸出的 csv（`output/`） | 本機保存檔名 | 內容 | public |
 |---|---|---|---|
@@ -128,7 +129,7 @@
 | `submission_nei1.0.csv` | — | NEI +1.0（v3.1 版） | 【未測】 |
 | `submission_nei1.5.csv` | — | NEI +1.5（v3.1 版） | 【未測】 |
 | `submission_nei2.0.csv` | `submission_nei2.0v3.1.csv` | NEI +2.0 | 0.873 |
-| `submission_nei3.0.csv` | `submission_nei3.0v3.1.csv` | NEI +3.0 | 0.854 |
+| `submission_nei3.0.csv` | `submission_nei3.0v3.1.csv` | NEI +3.0 | 0.854† |
 
 > 注意：`submission_nei2.0v3.1.csv`、`submission_nei3.0v3.1.csv` 曾被我誤記成 v3 的檔案，已用 NEI 筆數核對更正為 v3.1。
 
@@ -136,7 +137,7 @@
 
 - **notebook**：`NLP_HW3_NTHU_115062556v4.0.ipynb`
 - **改動**：加入 `qwen06_pilot`（`Qwen/Qwen3-0.6B-Base` + LoRA r=16、只用 6000 筆訓練資料、1 epoch）。提交檔檔名改含成員代號（`m5_d13d8f`）。
-- **結果**：qwen 單模型 acc 0.7103（最弱），5 成員集成 dev accuracy 0.7720、CFEVER 0.7273（跟 4 成員差不多，集成只多約 0.17 pt）；public（NEI +1.5）0.875，高於 v3 的 3 成員 0.861。
+- **結果**：qwen 單模型 acc 0.7103（最弱），5 成員集成 dev accuracy 0.7720、CFEVER 0.7273（跟 4 成員差不多，集成只多約 0.17 pt）；public（NEI +1.5）0.875†，高於 v3 的 3 成員 0.861†。
 - **判斷**：邊際效果小，但不傷害，保留。完整版 `qwen06`（全部訓練資料、2 epoch）寫在設定裡，**沒有執行**。
 
 | 程式輸出的 csv（`output/`） | 本機保存檔名 | 內容 | public |
@@ -147,7 +148,7 @@
 | `submission_m5_d13d8f_nei0.0.csv` | — | NEI +0 | 【未測】 |
 | `submission_m5_d13d8f_nei0.5.csv` | — | NEI +0.5 | 【未測】 |
 | `submission_m5_d13d8f_nei1.0.csv` | — | NEI +1.0 | 【未測】 |
-| `submission_m5_d13d8f_nei1.5.csv` | `submission_m5_d13d8f_nei1.5.csv` | NEI +1.5 | 0.875 |
+| `submission_m5_d13d8f_nei1.5.csv` | `submission_m5_d13d8f_nei1.5.csv` | NEI +1.5 | 0.875† |
 
 （`submissionv4.0.csv` 在本機有保存，但專案筆記沒有它的分數紀錄；若你確實送過，請補上分數。）
 
@@ -156,7 +157,7 @@
 - **notebook**：`NLP_HW3_NTHU_115062556v5.0.ipynb`
 - **動機**：分類 accuracy 0.77，但 CFEVER 只有 0.73；差距來自前 5 句沒有涵蓋完整的標準證據組（候選池涵蓋約 96% 的題目，Recall@5 只有 86%）。
 - **改動**：在 dev 的 supports / refutes 題上，用 HistGradientBoosting 訓練一個句子選擇器重排前 12 句（特徵：重排分數與名次、與第 1 名的分差、頁面機率與名次、同頁在前 5 的句數、與 claim 的 bigram 重疊…），dev 用 5 折（以題目為單位）out-of-fold 評估。**只改變送出的 5 句證據，分類器輸入不變。**
-- **結果**：證據 Recall@5 0.8615 → 0.8780（Recall@1 0.4955 → 0.4970、@3 0.8005 → 0.8275）；依標準證據句數：1 句 0.9356 → 0.9442、2 句 0.7856 → 0.8129、3 句 0.6509 → 0.6864。dev CFEVER 0.7273 → 0.7330。public（NEI +1.5）0.875 → 0.878。
+- **結果**：證據 Recall@5 0.8615 → 0.8780（Recall@1 0.4955 → 0.4970、@3 0.8005 → 0.8275）；依標準證據句數：1 句 0.9356 → 0.9442、2 句 0.7856 → 0.8129、3 句 0.6509 → 0.6864。dev CFEVER 0.7273 → 0.7330。public（NEI +1.5）0.875† → 0.878†。
 
 | 程式輸出的 csv（`output/`） | 本機保存檔名 | 內容 | public |
 |---|---|---|---|
@@ -166,32 +167,32 @@
 | `submission_m5_d13d8f_sel_nei0.0.csv` | — | NEI +0 | 【未測】 |
 | `submission_m5_d13d8f_sel_nei0.5.csv` | — | NEI +0.5 | 【未測】 |
 | `submission_m5_d13d8f_sel_nei1.0.csv` | — | NEI +1.0 | 【未測】 |
-| `submission_m5_d13d8f_sel_nei1.5.csv` | `submission_m5_d13d8f_sel_nei1.5.csv` | NEI +1.5 | 0.878 |
+| `submission_m5_d13d8f_sel_nei1.5.csv` | `submission_m5_d13d8f_sel_nei1.5.csv` | NEI +1.5 | 0.878† |
 
 ### v5.1 — 全域 NEI +2.0 與「只對 A 組加偏差」（v5.0 多加一個 cell）
 
 - **notebook**：`NLP_HW3_NTHU_115062556v5.1.ipynb`（＝ v5.0 加一個最後的 cell，只需要跑那一個 cell）
 - **改動**：test 可以依 id 與題目樣態分成三組（A：id ≤ 31996，3000 題，類似 dev；B：id > 31996 且含「最喜歡」，1000 題，模型 100% 判 NEI；C：其餘 2000 題長句，像抄自維基，預測 ~50/49/1 為 S/R/NEI）。假設只對 A 組加偏差比全域偏差好。
-- **結果**：全域 NEI +2.0 → 0.874；只對 A 組 +2.5 → 0.867，**沒有勝過全域偏差**，而且需要用 id 與「最喜歡」做分組，不夠通用（失敗）。
+- **結果**：全域 NEI +2.0 → 0.874†；只對 A 組 +2.5 → 0.867†，**沒有勝過全域偏差**，而且需要用 id 與「最喜歡」做分組，不夠通用（失敗）。
 
 | 程式輸出的 csv（`output/`） | 本機保存檔名 | 內容 | public |
 |---|---|---|---|
-| `submission_m5_d13d8f_sel_nei2.0.csv` | 同名 | 全域 NEI +2.0 | 0.874 |
+| `submission_m5_d13d8f_sel_nei2.0.csv` | 同名 | 全域 NEI +2.0 | 0.874† |
 | `submission_m5_d13d8f_sel_nei2.5.csv` | — | 全域 NEI +2.5 | 【未測】 |
 | `submission_m5_d13d8f_sel_Anei2.0.csv` | — | A 組 +2.0 | 【未測】 |
-| `submission_m5_d13d8f_sel_Anei2.5.csv` | 同名 | A 組 +2.5 | 0.867 |
+| `submission_m5_d13d8f_sel_Anei2.5.csv` | 同名 | A 組 +2.5 | 0.867† |
 | `submission_m5_d13d8f_sel_Anei3.0.csv` | — | A 組 +3.0 | 【未測】 |
 
 ### v6.0 — 第二個重排器 + hard negative mining（失敗）
 
 - **notebook**：`NLP_HW3_NTHU_115062556v6.0.ipynb`；輸出資料夾 `output/v6/`
 - **改動**：訓練第二個句子重排器（`chinese-roberta-wwm-ext`、2 epoch、max length 160），負例直接取自第一個重排器對訓練題的高分非標準句（hard negative mining）；選擇器新增 base / base+link / base+link+rr2 三組特徵並以 OOF Recall@5 選擇。
-- **結果**：三組特徵的 OOF Recall@5 全部 0.8780，**沒有增益**，不採用（選用最簡單的 base）。因此 v6 的輸出與 v5 相同：public（NEI +1.5）0.878。
+- **結果**：三組特徵的 OOF Recall@5 全部 0.8780，**沒有增益**，不採用（選用最簡單的 base）。因此 v6 的輸出與 v5 相同：public（NEI +1.5）0.878†。
 - **其他嘗試**：selector 特徵加入「超連結關聯（是否被第 1/2 名句子的超連結指到）」，Recall@5 一樣是 0.8780。
 
 | 程式輸出的 csv（`output/v6/`） | 本機保存檔名 | 內容 | public |
 |---|---|---|---|
-| `submission_m5_d13d8f_sel_nei1.5.csv` | `output/v6/` 同名 | NEI +1.5 | 0.878 |
+| `submission_m5_d13d8f_sel_nei1.5.csv` | `output/v6/` 同名 | NEI +1.5 | 0.878† |
 | `submission.csv`、`submission_nocal.csv`、`_sel_cal.csv`、`_sel_nei0.0/0.5/1.0/2.0/2.5.csv`、`_sel_Anei2.0/2.5/3.0.csv` | — | 同 v5 系列的其他組合（v6 重跑產生） | 【未測】 |
 
 ### v7.0 — 第二顆 330M（seed 42）→ 6 成員（成功；最終提交來源）
@@ -199,9 +200,9 @@
 - **notebook**：`NLP_HW3_NTHU_115062556v7.0.ipynb`；輸出資料夾 `output/v7/`
 - **動機**：想提高 **private** 分數，而不是靠 public 挑檔。集成帶來的增益是真的（可以在 dev 上用配對檢定驗證），而照 public 挑偏差則不是。
 - **改動**：加入 `erlangshen_330m_b`（同一個 330M 架構、seed 42；seed 同時改變分類頭初始化、dropout、資料順序與訓練資料的建立順序，兩顆的錯誤不完全重疊）。6 成員 log-softmax 等權平均。
-- **結果**：成員 acc 0.7647；6 成員 dev accuracy 0.7780、CFEVER 0.7370（5 成員 0.7330 → 6 成員 0.7370，同一批 dev 題目配對比較變好 34 題 / 變壞 22 題，約 1.6 個標準誤）。public（NEI +1.5）0.878 → **0.881**；（NEI +2.0）0.874 → 0.876。
-- **NEI 偏差曲線（全域，public）**：0.5 → 0.856、1.0 → 0.871、**1.5 → 0.881**、2.0 → 0.876、2.5 → 0.870；二次擬合頂點約 1.7，1.5～2.0 在高原內。dev 上同一組偏差的 CFEVER 是 0.7370 / 0.7390 / 0.7387 / 0.7277（偏差 0 / 0.5 / 1.0 / 1.5），dev 偏好低偏差，與 public 相反。
-- **A 組專用偏差**：2.0 → 0.876、2.5 → 0.872、3.0 → 0.865，**一樣沒有超過全域峰值**，不採用，之後從 notebook 移除。
+- **結果**：成員 acc 0.7647；6 成員 dev accuracy 0.7780、CFEVER 0.7370（5 成員 0.7330 → 6 成員 0.7370，同一批 dev 題目配對比較變好 34 題 / 變壞 22 題，約 1.6 個標準誤）。public（NEI +1.5）0.878† → **0.881**；（NEI +2.0）0.874† → 0.876。
+- **NEI 偏差曲線（全域，public）**：0.5 → 0.856†、1.0 → 0.871、**1.5 → 0.881**、2.0 → 0.876、2.5 → 0.870†；二次擬合頂點約 1.7，1.5～2.0 在高原內。dev 上同一組偏差的 CFEVER 是 0.7370 / 0.7390 / 0.7387 / 0.7277（偏差 0 / 0.5 / 1.0 / 1.5），dev 偏好低偏差，與 public 相反。
+- **A 組專用偏差**：2.0 → 0.876†、2.5 → 0.872†、3.0 → 0.865†，**一樣沒有超過全域峰值**，不採用，之後從 notebook 移除。
 
 | 程式輸出的 csv（`output/v7/`） | 本機保存檔名 | 內容 | public |
 |---|---|---|---|
@@ -209,14 +210,14 @@
 | `submission_nocal.csv` | — | 未校準 | 【未測】 |
 | `submission_m6_037f63_sel_cal.csv` | — | 同 `submission.csv` | 【未測】 |
 | `submission_m6_037f63_sel_nei0.0.csv` | — | NEI +0 | 【未測】 |
-| `submission_m6_037f63_sel_nei0.5.csv` | 同名 | NEI +0.5 | 0.856 |
+| `submission_m6_037f63_sel_nei0.5.csv` | 同名 | NEI +0.5 | 0.856† |
 | `submission_m6_037f63_sel_nei1.0.csv` | 同名 | NEI +1.0 | 0.871 |
 | `submission_m6_037f63_sel_nei1.5.csv` | 同名 | NEI +1.5（**最終之一**） | **0.881** |
 | `submission_m6_037f63_sel_nei2.0.csv` | 同名 | NEI +2.0（**最終之一**） | 0.876 |
-| `submission_m6_037f63_sel_nei2.5.csv` | 同名 | NEI +2.5 | 0.870 |
-| `submission_m6_037f63_sel_Anei2.0.csv` | 同名 | A 組 +2.0 | 0.876 |
-| `submission_m6_037f63_sel_Anei2.5.csv` | 同名 | A 組 +2.5 | 0.872 |
-| `submission_m6_037f63_sel_Anei3.0.csv` | 同名 | A 組 +3.0 | 0.865 |
+| `submission_m6_037f63_sel_nei2.5.csv` | 同名 | NEI +2.5 | 0.870† |
+| `submission_m6_037f63_sel_Anei2.0.csv` | 同名 | A 組 +2.0 | 0.876† |
+| `submission_m6_037f63_sel_Anei2.5.csv` | 同名 | A 組 +2.5 | 0.872† |
+| `submission_m6_037f63_sel_Anei3.0.csv` | 同名 | A 組 +3.0 | 0.865† |
 
 ### v8.0 — 三個想法的驗證（全部沒有採用）
 
@@ -227,7 +228,7 @@
 |---|---|---|---|
 | 分類器改讀選擇器的前 4 句（證據一致性） | 6 個成員重新推論（約 56 分鐘，不需重訓） | 配對 @0：+55/−58（z −0.28）；@1.5：+55/−51（z +0.39） | 雜訊，**不採用** |
 | 5 折交叉驗證學集成權重 | NLL 目標、權重非負且加總為 1 | @0 z −0.85；@1.5 z +1.26（rr）；學到的權重反而給最弱的 qwen 最大（0.28） | 不穩定，**不採用** |
-| refutes 偏差（NEI 固定 1.5） | 偏差 0 / 0.25 / 0.5 / 0.75 | dev CFEVER 0.7277 / 0.7340 / 0.7393 / 0.7430；二折交叉驗證兩折都提升 | dev 有效，但 **public 掉到 0.875**（< 事先定的 0.878 門檻），**不採用** |
+| refutes 偏差（NEI 固定 1.5） | 偏差 0 / 0.25 / 0.5 / 0.75 | dev CFEVER 0.7277 / 0.7340 / 0.7393 / 0.7430；二折交叉驗證兩折都提升 | dev 有效，但 **public 掉到 0.875**（< 事先定的 0.878† 門檻），**不採用** |
 
 - **refutes 偏差的教訓**：它把 A 組被判成 NEI 的比例從 48.8% 拉回 44%，方向正好和 public 偏好的「更多 NEI」相反。**依賴類別比例的參數不能只看 dev**，因為 dev 三類各 1/3，而 test A 組的 NEI 比例更高。
 - v8 資料夾的 `nei1.5` 與 `nei1.0` 兩個檔案的 public 與 v7 同名檔一模一樣（0.881 / 0.871），代表 v8 沒有改變主流程的預測（檔案本身的 sha256 比對尚未做）。
@@ -314,7 +315,7 @@
 | 超連結第二跳 | 各版都評估（v3.0 之後的 metrics 皆為 `hop_delta = None`） | 最好只多 0.2 pt（Recall@5 0.8615 → 0.8635） | 沒超過採用門檻（> 0.2 pt）；第二跳候選容易擠掉第一跳的正確句子，`hop_delta = None` |
 | dev 校準偏差 [0, 0.75, 1.0] | v3.1 | public 0.851 | 低於同模型 NEI +2.0 的 0.873；dev 偏好的 NEI 偏差比 public 低 |
 | Qwen3-0.6B LoRA pilot（只用 6000 筆、1 epoch） | v4.0 | 單模型 0.7103；集成約 +0.17 pt | 邊際效果小；保留在集成中，不傷害。完整版未執行 |
-| 只對 test A 組加 NEI 偏差 | v5.1、v7 | 0.867 / 0.876 / 0.872 / 0.865 | 沒超過全域偏差峰值 0.881，且要用 id / 「最喜歡」分組，不夠通用 |
+| 只對 test A 組加 NEI 偏差 | v5.1、v7 | 0.867† / 0.876† / 0.872† / 0.865† | 沒超過全域偏差峰值 0.881，且要用 id / 「最喜歡」分組，不夠通用 |
 | 第二個重排器 + hard negative mining；selector 加 link / rr2 特徵 | v6.0 | OOF Recall@5 全部 0.8780 | 沒有增益 |
 | 分類器改讀選擇器證據 | v8.0 | z −0.28 / +0.39 | 雜訊 |
 | 交叉驗證學集成權重 | v8.0 | z −0.85 / +1.26 | 不穩定；權重偏愛最弱的 qwen |
@@ -332,13 +333,15 @@
 | 訓練證據與測試一致（v0 → v1） | 修正捷徑 | public 0.716 → 0.833 |
 | NLI 預訓練 | `roberta_base` → Erlangshen-110M-NLI | dev acc 0.7227 → 0.7470 |
 | 模型大小 | 110M → 330M NLI | 0.7470 → 0.7663 |
-| 集成成員數（NEI +1.5） | 3 → 5 → 5+選擇器 → 6+選擇器 | public 0.861 → 0.875 → 0.878 → 0.881 |
+| 集成成員數（NEI +1.5） | 3 → 5 → 5+選擇器 → 6+選擇器 | public 0.861† → 0.875† → 0.878† → 0.881 |
 | 證據句選擇器 | 重排器 → +選擇器 | evidence Recall@5 0.8615 → 0.8780 |
-| NEI 偏差（v7，public） | 0.5 / 1.0 / 1.5 / 2.0 / 2.5 | 0.856 / 0.871 / 0.881 / 0.876 / 0.870 |
+| NEI 偏差（v7，public） | 0.5 / 1.0 / 1.5 / 2.0 / 2.5 | 0.856† / 0.871 / 0.881 / 0.876 / 0.870† |
 
 ---
 
 ## 5. 所有「有 public 分數」的檔案（由高到低）
+
+（†＝非本帳號送出，見開頭說明。）
 
 | public | 檔案 | 版本 |
 |---|---|---|
@@ -354,28 +357,28 @@
 | 0.879 | `sub_v9c_m6tta_sibcorr_sibsel_share1.5.csv` | v9 |
 | 0.878 | `sub_v9b_m6tta_sibsel_nei1.5.csv` | v9 |
 | 0.877 | `sub_v9a_m6tta_nei1.5.csv` | v9 |
-| 0.878 | `submission_m5_d13d8f_sel_nei1.5.csv`（v5.0 與 v6.0 同分） | v5.0 / v6.0 |
+| 0.878† | `submission_m5_d13d8f_sel_nei1.5.csv`（v5.0 與 v6.0 同分） | v5.0 / v6.0 |
 | 0.876 | `submission_m6_037f63_sel_nei2.0.csv` | v7.0 |
-| 0.876 | `submission_m6_037f63_sel_Anei2.0.csv` | v7.0 |
+| 0.876† | `submission_m6_037f63_sel_Anei2.0.csv` | v7.0 |
 | 0.875 | `submission_v8_rr_equal_ref0.5_nei1.5.csv` | v8.0 |
-| 0.875 | `submission_m5_d13d8f_nei1.5.csv` | v4.0 |
-| 0.874 | `submission_m5_d13d8f_sel_nei2.0.csv` | v5.0 + v5.1 cell |
+| 0.875† | `submission_m5_d13d8f_nei1.5.csv` | v4.0 |
+| 0.874† | `submission_m5_d13d8f_sel_nei2.0.csv` | v5.0 + v5.1 cell |
 | 0.873 | `submission_nei2.0v3.1.csv` | v3.1 |
-| 0.872 | `submission_m6_037f63_sel_Anei2.5.csv` | v7.0 |
+| 0.872† | `submission_m6_037f63_sel_Anei2.5.csv` | v7.0 |
 | 0.871 | `submission_m6_037f63_sel_nei1.0.csv`（v7；v8 同名檔也是 0.871） | v7.0 / v8.0 |
-| 0.870 | `submission_m6_037f63_sel_nei2.5.csv` | v7.0 |
-| 0.867 | `submission_m5_d13d8f_sel_Anei2.5.csv` | v5.0 + v5.1 cell |
-| 0.865 | `submission_m6_037f63_sel_Anei3.0.csv` | v7.0 |
-| 0.861 | `submission_nei1.5v3.csv` | v3.0 |
-| 0.856 | `submission_m6_037f63_sel_nei0.5.csv` | v7.0 |
-| 0.854 | `submission_nei3.0v3.1.csv` | v3.1 |
+| 0.870† | `submission_m6_037f63_sel_nei2.5.csv` | v7.0 |
+| 0.867† | `submission_m5_d13d8f_sel_Anei2.5.csv` | v5.0 + v5.1 cell |
+| 0.865† | `submission_m6_037f63_sel_Anei3.0.csv` | v7.0 |
+| 0.861† | `submission_nei1.5v3.csv` | v3.0 |
+| 0.856† | `submission_m6_037f63_sel_nei0.5.csv` | v7.0 |
+| 0.854† | `submission_nei3.0v3.1.csv` | v3.1 |
 | 0.852 | `submission_nei1.0v3.csv` | v3.0 |
 | 0.851 | `submissionv3.1.csv` | v3.1 |
-| 0.844 | `submission_nei0.5v3.csv` | v3.0 |
+| 0.844† | `submission_nei0.5v3.csv` | v3.0 |
 | 0.838 | `submission.csv`（v5.0，NEI 偏差 0） | v5.0 |
 | 0.833 | `submissionv1.csv` | v1 |
-| 0.824 | `submissionv3.csv` | v3.0 |
-| 0.810 | `submissionv2.csv` | v2 |
+| 0.824† | `submissionv3.csv` | v3.0 |
+| 0.810† | `submissionv2.csv` | v2 |
 | 0.809 | `submission_nocalv1.csv` | v1 |
 | 0.716 | `submissionv0.csv` | v0 |
 
