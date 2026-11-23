@@ -18,7 +18,7 @@
 | ☑ | `NLP_HW3_NTHU_115062556.ipynb` 用 `hw3` kernel 從頭執行，輸出已保存在檔案裡 | 2026-11-21 重構為 `sample_code.ipynb` 的 38 格架構（Markdown 不動、補充只寫在 Report），以 `jupyter nbconvert --execute` 重新執行，19 個 code cell 無錯誤；2026-11-23 加入 v11 後再從頭執行一次，無錯誤 |
 | ☑ | 用 `sha256sum` 確認 `output/final/submission_v9_m12_share*.csv` 與 `output/v9/` 送出的檔案相同 | 2026-11-21 重跑後 share 1.25 / 1.5 / 1.75 / 1.875 / 2.0 / 2.25 六份 sha256 與重構前全部相同；2026-11-23 重跑後 v9 六份、v10 兩份不變，v11 與上傳檔逐 byte 相同 |
 | ☑ | **用本人帳號送出** `output/final/submission_v9_m12_share1.75.csv`、`share2.0.csv`（最終兩份必須是本帳號的提交） | 2026-11-19 已送出：0.889 / 0.888（另送 1.875：0.888） |
-| ☐ | **在 Kaggle 手動選 2 份最終提交**（見 §3.2） | 2026-11-23 第二次改選：取消 `submission_v9_m12_share1.75.csv`，改勾 `submission_v11_m12_r1.0_nei1.5.csv`，保留 `submission_v10_m12_nei0.0.csv`（截止：**2026-11-26 00:00**） |
+| ☑ | **在 Kaggle 手動選 2 份最終提交**（見 §3.2） | 2026-11-23 本人已第二次改選：取消 `submission_v9_m12_share1.75.csv`，改勾 `submission_v11_m12_r1.0_nei1.5.csv`，保留 `submission_v10_m12_nei0.0.csv`（截止：**2026-11-26 00:00**） |
 | ☑ | 用本帳號送出 v10 兩份 | 2026-11-23：`nei0.0` 0.862、`nei0.5` 0.872 |
 | ☑ | 用本帳號送出 v11 | 2026-11-23：`submission_v11_m12_r1.0_nei1.5.csv` 0.877 |
 | ☐ | （建議）用本帳號送出 `share1.25`、`share2.25`、`output/v9/sub_v9o_m10_share1.75.csv`，讓 Report 引用的掃描分數都在本帳號上；送出後補回 README 的【待提交】 | Report 的 public 0.889 已與本帳號一致 |
