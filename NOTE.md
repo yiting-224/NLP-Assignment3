@@ -11,14 +11,15 @@
 
 ## 0. 繳交前必做清單（照順序打勾）
 
-截止前最後一次檢查，**每一項都要確認**。狀態是 2026-11-21 時的狀態。
+截止前最後一次檢查，**每一項都要確認**。狀態是 2026-11-23 時的狀態。
 
 | 狀態 | 項目 | 說明 |
 |---|---|---|
 | ☑ | `NLP_HW3_NTHU_115062556.ipynb` 用 `hw3` kernel 從頭執行，輸出已保存在檔案裡 | 2026-11-21 重構為 `sample_code.ipynb` 的 38 格架構（Markdown 不動、補充只寫在 Report），以 `jupyter nbconvert --execute` 重新執行，19 個 code cell 無錯誤 |
 | ☑ | 用 `sha256sum` 確認 `output/final/submission_v9_m12_share*.csv` 與 `output/v9/` 送出的檔案相同 | 2026-11-21 重跑後 share 1.25 / 1.5 / 1.75 / 1.875 / 2.0 / 2.25 六份 sha256 與重構前全部相同 |
 | ☑ | **用本人帳號送出** `output/final/submission_v9_m12_share1.75.csv`、`share2.0.csv`（最終兩份必須是本帳號的提交） | 2026-11-19 已送出：0.889 / 0.888（另送 1.875：0.888） |
-| ☑ | **在 Kaggle 手動選 2 份最終提交**（見 §3.2） | 2026-11-21 本人已勾選 `submission_v9_m12_share1.75.csv`、`submission_v9_m12_share2.0.csv`（截止：2026-11-23 12:00） |
+| ☑ | **在 Kaggle 手動選 2 份最終提交**（見 §3.2） | 2026-11-23 本人已改勾 `submission_v9_m12_share1.75.csv`、`submission_v10_m12_nei0.0.csv`（截止：**2026-11-26 00:00**） |
+| ☑ | 用本帳號送出 v10 兩份 | 2026-11-23：`nei0.0` 0.862、`nei0.5` 0.872 |
 | ☐ | （建議）用本帳號送出 `share1.25`、`share2.25`、`output/v9/sub_v9o_m10_share1.75.csv`，讓 Report 引用的掃描分數都在本帳號上；送出後補回 README 的【待提交】 | Report 的 public 0.889 已與本帳號一致 |
 | ☐ | Report 內容再逐字檢查一次（特別是 Q5 的聲明是否屬實） | 見 §2 Report 規定 |
 | ☐ | （建議）寄信向助教確認 `joeddav/xlm-roberta-large-xnli`、`MoritzLaurer/mDeBERTa-v3-base-xnli-multilingual-nli-2mil7` 也屬於「已微調過的 checkpoint、< 1B 可用」 | 11/14 的回覆是針對 Erlangshen；寄信由本人決定 |
@@ -26,7 +27,7 @@
 | ☐ | zip 裡**只放** `NLP_HW3_NTHU_115062556.ipynb`（沒有其他檔案、沒有資料夾） | 見 §1 |
 | ☐ | 檔名逐字檢查（學校 `NTHU`、學號 `115062556`、副檔名） | 錯一個 −5 |
 | ☐ | 上傳 NTU COOL | 作業說明寫「三週」，**實際截止時間以 NTU COOL 頁面為準** |
-| ☐ | 11/23 12:00 公布 private 後，補填 Report 的 `Your private leaderboard score:` | 在 COOL 截止前補，見 §2 |
+| ☐ | Report 的 `Your private leaderboard score:` | 助教 11/23 公告：**可以空白**（11/23 只是快照，30% 成績看 11/26 的最後分數）；目前留白 |
 | ☑ | Report 題目與格式未更動（用腳本逐字比對 sample code 的 Report cell） | 5 題逐字保留、`Answer:` 5 個 |
 | ☑ | Report 已寫 Kaggle username 與 public 分數 | 17568160 / 0.889 |
 | ☑ | **Report 以英文撰寫**（2026-11-21 由中文版翻成英文；題目行與 sample 逐字相同，只有人名式專有名詞「最喜歡」等原文片語保留中文） | 英文版產生腳本在本機 `work/build_report_en.py`（不在 repo） |
@@ -38,7 +39,9 @@
 ## 1. 作業說明（PDF `NLP_HW3_Fact_Verification.pdf`）
 
 ### 1.1 時程與評分
-- Kaggle 競賽：**2026-11-04 09:00 開始 → 2026-11-23 12:00 結束**；**private leaderboard 在 2026-11-23 12:00 公布**。
+- Kaggle 競賽：**2026-11-04 09:00 開始 → 2026-11-26 00:00 結束**（助教 11/23 公告：原 11/23 12:00 延長到 11/26 00:00，即作業截止時間）。
+- 11/23 助教公布一份 **private leaderboard 快照**供參考；之後仍可上傳，**30% Leaderboard 成績看 11/26 時最後的分數**。
+- 助教 11/23：**Report 的 private score 可以空白不填，但 Kaggle username 務必正確**（以免無法核對成績）。本帳號 username：`17568160`（本人確認）。
 - 作業說明：**三週**內完成，上傳到 **NTU COOL**。（實際截止時間以 COOL 為準。）
 - 評分：
   - Coding work **30%**（TODO 1 檢索頁面 10%、TODO 2 檢索證據 10%、TODO 3 分類 10%）
@@ -121,10 +124,10 @@
 
 ### 3.2 Kaggle 最終提交（**截止前必須手動選**）
 - **最多選 2 份** submission 作為最終計分版本。
-- **最終兩份（2026-11-17 決定，取代 11-14 的 v7 兩份）**：
-  1. `output/final/submission_v9_m12_share1.75.csv` — 12 成員集成，NEI 比例對齊 v7 偏差 1.75（A 組 52.3%）
-  2. `output/final/submission_v9_m12_share2.0.csv` — 同上，對齊 v7 偏差 2.0（A 組 55.6%）
-  - 理由：12 成員集成的 NEI 比例在 1.75～2.0 形成平台、2.25 開始下降；兩份取平台兩端，private 取兩者較高者。
+- **最終兩份（2026-11-23 改選，取代 11-17 的 share1.75 + share2.0）**：
+  1. `output/final/submission_v9_m12_share1.75.csv` — 12 成員集成，NEI 比例對齊 v7 偏差 1.75（public 0.889）
+  2. `output/final/submission_v10_m12_nei0.0.csv` — 同一個集成，**不加 NEI 偏差**（只用 dev 決定；public 0.862）
+  - 理由：11/23 private 快照 0.8346 顯示照 public 調的 NEI 偏差沒有轉移（public 的 A 組 NEI 題特別多，見 README 的 v10）；第 2 份負責 private，第 1 份保留 public。private 取兩者較高者。
 - 這兩份**必須先用本人帳號送出**，才能在 "Select final submissions" 頁面被勾選；勾選前先看檔名與分數欄。
 - v7 的兩份（0.881 / 0.876）與 v8 的 refutes 偏差檔（0.875）**不再選**。
 
