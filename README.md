@@ -329,7 +329,7 @@
   - test：C 組（抄自維基的 2000 題）新證據的第一名有 98.7% 與原本相同，涵蓋原句的程度 0 題變差、17 題變好；A 組 42 題變好、2 題變差。
   - 組成分析的擬合（不使用 v12 的分數）預估 private：v12 不加偏差約 0.891、NEI +0.5 約 0.882（v10 0.884、v11 0.877）。
 - **public（2026-11-24 上傳）**：不加偏差 0.862、NEI +0.5 0.872，與 v10 對應的兩份完全相同；上傳前擬合預估不加偏差那份為 0.862。原因：public 裡是 A 組大部分的 NEI 題，NEI 不需要證據；證據改進幫到的是 supports / refutes，而這兩類多半在 private。
-- **沒有做完的**：在 Kaggle GPU 上微調 bge-reranker（`work/v12/kernel/script.py`）一直在排隊，沒有執行，不採用。
+- **試過、不採用**：在 Kaggle GPU 上微調 bge-reranker（`work/v12/kernel/script.py`；train 上挖 hard negative 28,328 組、listwise 1 epoch，約 3 小時）。之前以為一直在排隊，11/24 查狀態才發現已經跑完。單獨使用時比 zero-shot 強很多（擴大池 Recall@5 0.8835 vs 0.834），但和 MacBERT 融合＋選擇器之後 dev OOF Recall@5 0.8985，與 zero-shot 版的 0.8990 相同，沒有進步，所以維持 zero-shot（`work/v12/ev_eval96.py bgem3ft`）。
 - **最終兩份（2026-11-24，本人勾選）**：v12 不加偏差＋ v10 不加偏差（舊證據）；private 取兩者較高者。
 
 | 程式輸出的 csv（`output/final/`） | 內容 | public |
