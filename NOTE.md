@@ -15,12 +15,13 @@
 
 | 狀態 | 項目 | 說明 |
 |---|---|---|
-| ☑ | `NLP_HW3_NTHU_115062556.ipynb` 用 `hw3` kernel 從頭執行，輸出已保存在檔案裡 | 2026-11-21 重構為 `sample_code.ipynb` 的 38 格架構（Markdown 不動、補充只寫在 Report），以 `jupyter nbconvert --execute` 重新執行，19 個 code cell 無錯誤；2026-11-23 加入 v11 後再從頭執行一次，無錯誤 |
+| ☑ | `NLP_HW3_NTHU_115062556.ipynb` 用 `hw3` kernel 從頭執行，輸出已保存在檔案裡 | 2026-11-21 重構為 `sample_code.ipynb` 的 38 格架構（Markdown 不動、補充只寫在 Report），以 `jupyter nbconvert --execute` 重新執行，19 個 code cell 無錯誤；2026-11-23 加入 v11、2026-11-24 加入 v12 後各再從頭執行一次，無錯誤 |
 | ☑ | 用 `sha256sum` 確認 `output/final/submission_v9_m12_share*.csv` 與 `output/v9/` 送出的檔案相同 | 2026-11-21 重跑後 share 1.25 / 1.5 / 1.75 / 1.875 / 2.0 / 2.25 六份 sha256 與重構前全部相同；2026-11-23 重跑後 v9 六份、v10 兩份不變，v11 與上傳檔逐 byte 相同 |
 | ☑ | **用本人帳號送出** `output/final/submission_v9_m12_share1.75.csv`、`share2.0.csv`（最終兩份必須是本帳號的提交） | 2026-11-19 已送出：0.889 / 0.888（另送 1.875：0.888） |
-| ☑ | **在 Kaggle 手動選 2 份最終提交**（見 §3.2） | 2026-11-23 本人已第二次改選：取消 `submission_v9_m12_share1.75.csv`，改勾 `submission_v11_m12_r1.0_nei1.5.csv`，保留 `submission_v10_m12_nei0.0.csv`（截止：**2026-11-26 00:00**） |
+| ☐ | **在 Kaggle 手動選 2 份最終提交**（見 §3.2） | **2026-11-24 第三次改選（待本人勾選）**：取消 `submission_v10_m12_nei0.0.csv`、`submission_v11_m12_r1.0_nei1.5.csv`，改勾 `submission_v12_m12_nei0.0.csv`、`submission_v12_m12_nei0.5.csv`。之前：2026-11-23 本人已第二次改選：取消 `submission_v9_m12_share1.75.csv`，改勾 `submission_v11_m12_r1.0_nei1.5.csv`，保留 `submission_v10_m12_nei0.0.csv`（截止：**2026-11-26 00:00**） |
 | ☑ | 用本帳號送出 v10 兩份 | 2026-11-23：`nei0.0` 0.862、`nei0.5` 0.872 |
 | ☑ | 用本帳號送出 v11 | 2026-11-23：`submission_v11_m12_r1.0_nei1.5.csv` 0.877 |
+| ☑ | 用本帳號送出 v12 兩份 | 2026-11-24：`nei0.0` 0.862、`nei0.5` 0.872 |
 | ☐ | （建議）用本帳號送出 `share1.25`、`share2.25`、`output/v9/sub_v9o_m10_share1.75.csv`，讓 Report 引用的掃描分數都在本帳號上；送出後補回 README 的【待提交】 | Report 的 public 0.889 已與本帳號一致 |
 | ☐ | Report 內容再逐字檢查一次（特別是 Q5 的聲明是否屬實） | 見 §2 Report 規定 |
 | ☐ | （建議）寄信向助教確認 `joeddav/xlm-roberta-large-xnli`、`MoritzLaurer/mDeBERTa-v3-base-xnli-multilingual-nli-2mil7` 也屬於「已微調過的 checkpoint、< 1B 可用」 | 11/14 的回覆是針對 Erlangshen；寄信由本人決定 |
@@ -125,10 +126,11 @@
 
 ### 3.2 Kaggle 最終提交（**截止前必須手動選**）
 - **最多選 2 份** submission 作為最終計分版本。
-- **最終兩份（2026-11-23 第二次改選；之前是 share1.75 + v10 nei0.0，更早是 share1.75 + share2.0）**：
-  1. `output/final/submission_v10_m12_nei0.0.csv` — 12 成員集成，**不加偏差**（只用 dev 決定；public 0.862）
-  2. `output/final/submission_v11_m12_r1.0_nei1.5.csv` — 同一個集成，refutes +1.0、NEI +1.5（dev 5 折交叉驗證決定；public 0.877）
-  - 理由：11/23 private 快照 0.8346 顯示照 public 調的 NEI 偏差沒有轉移（public 的 A 組 NEI 題特別多，見 README 的 v10）。share1.75 的 private 已知最多 0.8346，留著沒有作用；public 排行榜取所有提交中最好的 public（0.889），與勾選無關。兩份都只用 dev 決定，private 取兩者較高者。
+- **最終兩份（2026-11-24 第三次改選；之前依序是 v10 nei0.0 + v11、share1.75 + v10 nei0.0、share1.75 + share2.0）**：
+  1. `output/final/submission_v12_m12_nei0.0.csv` — v12（證據改進＋7 個本機成員重讀新證據），**不加偏差**（public 0.862）
+  2. `output/final/submission_v12_m12_nei0.5.csv` — 同一個集成，NEI +0.5（dev 5 折交叉驗證決定；public 0.872）
+  - v12 理由：dev CFEVER 0.7550 → 0.7633（z 2.39）／0.7680（z 3.22），見 README 的 v12。
+  - 11/23 改選（v10 nei0.0 + v11）的理由：11/23 private 快照 0.8346 顯示照 public 調的 NEI 偏差沒有轉移（public 的 A 組 NEI 題特別多，見 README 的 v10）。share1.75 的 private 已知最多 0.8346，留著沒有作用；public 排行榜取所有提交中最好的 public（0.889），與勾選無關。兩份都只用 dev 決定，private 取兩者較高者。
 - 這兩份**必須先用本人帳號送出**，才能在 "Select final submissions" 頁面被勾選；勾選前先看檔名與分數欄。
 - v7 的兩份（0.881 / 0.876）與 v8 的 refutes 偏差檔（0.875）**不再選**。
 
