@@ -19,9 +19,9 @@
 | 順序 | 檔案 | 產生它的 notebook | public | NEI 比例 |
 |---|---|---|---|---|
 | 1 | `output/final/submission_v12_m12_nei0.0.csv` | `NLP_HW3_NTHU_115062556.ipynb`（最後一個 code cell：Submission） | 0.862 | v12 證據＋重新推論，不加偏差（A 組 31.5%）；見 v12 |
-| 2 | `output/final/submission_v12_m12_nei0.5.csv` | `NLP_HW3_NTHU_115062556.ipynb`（最後一個 code cell：Submission） | 0.872 | v12，NEI +0.5，dev 5 折交叉驗證決定（A 組 35.3%）；見 v12 |
+| 2 | `output/final/submission_v10_m12_nei0.0.csv` | `NLP_HW3_NTHU_115062556.ipynb`（最後一個 code cell：Submission） | 0.862 | v10，舊證據，不加偏差（A 組 34.2%）；見 v10、v12 |
 
-（2026-11-24 第三次改選：v12 取代 v10 nei0.0 ＋ v11。2026-11-23 第二次改選取代了 `share1.75.csv`（更早是 `share2.0.csv`）。11/23 的 private 快照：share1.75 / share2.0 那一組是 **0.8346**，代表 share1.75 的 private 最多 0.8346，留在最終兩份裡沒有作用；public 排行榜取所有提交中最好的 public（0.889），與勾選無關。原因與修正見 §2 的 v10、v11。）
+（2026-11-24 第三次改選（本人勾選）：v12 nei0.0 ＋ v10 nei0.0，取代 v10 nei0.0 ＋ v11；理由與分析見 v12 的「為什麼換成 v12」。2026-11-23 第二次改選取代了 `share1.75.csv`（更早是 `share2.0.csv`）。11/23 的 private 快照：share1.75 / share2.0 那一組是 **0.8346**，代表 share1.75 的 private 最多 0.8346，留在最終兩份裡沒有作用；public 排行榜取所有提交中最好的 public（0.889），與勾選無關。原因與修正見 §2 的 v10、v11。）
 
 定稿 notebook：`NLP_HW3_NTHU_115062556.ipynb`（**2026-11-21 重構版**：沿用 `sample_code.ipynb` 的 38 格架構、Markdown 原文不動，19 個 code cell 放 v9 的最終 pipeline；補充說明只寫在最後的 Report；**已用 hw3 kernel 從頭執行並保存輸出**，輸出到 `output/final/`；六份 `submission_v9_m12_share*.csv` 重跑後 sha256 與重構前完全相同）。
 重構前的版本（自訂架構：v8.0 + 第 9 節 v9 + Report，2026-11-17 執行）保留在 git commit `047ce6e`。
@@ -330,12 +330,37 @@
   - 組成分析的擬合（不使用 v12 的分數）預估 private：v12 不加偏差約 0.891、NEI +0.5 約 0.882（v10 0.884、v11 0.877）。
 - **public（2026-11-24 上傳）**：不加偏差 0.862、NEI +0.5 0.872，與 v10 對應的兩份完全相同；上傳前擬合預估不加偏差那份為 0.862。原因：public 裡是 A 組大部分的 NEI 題，NEI 不需要證據；證據改進幫到的是 supports / refutes，而這兩類多半在 private。
 - **沒有做完的**：在 Kaggle GPU 上微調 bge-reranker（`work/v12/kernel/script.py`）一直在排隊，沒有執行，不採用。
-- **最終兩份（2026-11-24）**：v12 不加偏差＋ v12 NEI +0.5，都只用 dev 決定；private 取兩者較高者。
+- **最終兩份（2026-11-24，本人勾選）**：v12 不加偏差＋ v10 不加偏差（舊證據）；private 取兩者較高者。
 
 | 程式輸出的 csv（`output/final/`） | 內容 | public |
 |---|---|---|
 | `submission_v12_m12_nei0.0.csv` | 12 成員（7 個重讀 v12 證據），不加偏差（**最終之一**） | 0.862 |
-| `submission_v12_m12_nei0.5.csv` | 同上，NEI +0.5（**最終之一**） | 0.872 |
+| `submission_v12_m12_nei0.5.csv` | 同上，NEI +0.5 | 0.872 |
+
+#### 為什麼換成 v12（2026-11-24 分析，`work/v12/why_v12.py` 的結果）
+
+1. **private 主要是 supports / refutes**：11/23 private 快照（share1.75：public 0.889、private 0.8346）回推，A 組約 880 題 NEI 在 public；擬合的 private A 組約 352 supports / 817 refutes / 120 NEI。S/R 要標籤與證據都對才得分，正是 v12 改進的部分。
+2. **dev（3000 題，每類 1000，分布同 A 組）各類 CFEVER**：
+
+| | 全部 | supports | refutes | NEI | 只算 S+R |
+|---|---|---|---|---|---|
+| v10 nei0.0 | 0.7550 | 0.791 | 0.722 | 0.752 | 0.7565 |
+| v11 r1.0 / nei1.5 | 0.7637 | 0.758 | 0.699 | 0.834 | 0.7285 |
+| v12 nei0.0 | 0.7633 | 0.816 | 0.738 | 0.736 | 0.7770 |
+| v12 nei0.5 | 0.7680 | 0.804 | 0.703 | 0.797 | 0.7535 |
+
+3. **逐題配對檢定**：
+
+| 比較 | 全部 | 只算 S+R |
+|---|---|---|
+| v12 nei0.0 vs v10 nei0.0 | +67 / −42，z = 2.39 | +58 / −17，z = 4.73 |
+| v12 nei0.5 vs v11 | +76 / −63，z = 1.10 | +73 / −23，z = 5.10 |
+
+   樣本外（各偏差規則在 4 折選、第 5 折評分）：v11 規則 0.7637、v12 NEI 規則 0.7650（配對 z = 0.33）。
+4. **組成擬合＋dev bootstrap 的 private 預估**（90% 區間）：v10 nei0.0 0.884 [0.877, 0.892]、v11 0.877 [0.870, 0.885]、**v12 nei0.0 0.891** [0.883, 0.899]、v12 nei0.5 0.882 [0.875, 0.890]。v12 nei0.0 − v10 nei0.0 = +0.0067，90% 區間 [+0.003, +0.010]，模型下 P(>0) = 0.999。
+5. **若組成估錯（private 與 dev 一樣均衡）**：v12 nei0.0 仍贏 v10 nei0.0（z 2.39），不會比較差。
+6. **不確定處**：public 上 nei0.5 比預估低 0.004（模型不完美）；C 組（抄自維基，約 2000 題）在 dev 沒有對應——標籤只改 18 題，證據清單約 1900 題不同但第一句 98.7% 相同，原句涵蓋 0 題變差、17 題變好；B 組四個版本都預測 NEI，不受影響；Kaggle 的 5 個成員沒有重讀新證據；z 與區間只含 dev 抽樣誤差。
+7. **最終勾選（本人決定）：v12 nei0.0 ＋ v10 nei0.0**。v12 nei0.0 是預估最高的一份；v10 nei0.0 是同一套偏差規則、舊證據的版本，防的是新證據流程在 test 上出現 dev 沒看到的問題（模型/流程風險），而不是 NEI 比例風險。代價：若 private 的 NEI 比估計多，這組沒有加 NEI 偏差的備案（v12 nei0.5 / v11 那類）；依擬合，v10 nei0.0 高過 v12 nei0.0 的機率約 0.001。
 
 ### 定稿 — `NLP_HW3_NTHU_115062556.ipynb`（Report 版）
 
@@ -389,10 +414,10 @@
 | 0.888 | `final/submission_v9_m12_share2.0.csv`（12 成員；11/23 前的最終之一） | v9 |
 | 0.888 | `final/submission_v9_m12_share1.875.csv` | v9 |
 | 0.877 | `final/submission_v11_m12_r1.0_nei1.5.csv`（12 成員，refutes +1.0、NEI +1.5；11/23 的最終之一） | v11 |
-| 0.872 | `final/submission_v12_m12_nei0.5.csv`（v12，NEI +0.5，**最終之一**） | v12 |
+| 0.872 | `final/submission_v12_m12_nei0.5.csv`（v12，NEI +0.5） | v12 |
 | 0.872 | `final/submission_v10_m12_nei0.5.csv`（12 成員，NEI 偏差 0.5） | v10 |
 | 0.862 | `final/submission_v12_m12_nei0.0.csv`（v12，不加偏差，**最終之一**） | v12 |
-| 0.862 | `final/submission_v10_m12_nei0.0.csv`（12 成員，不加偏差；11/23 的最終之一） | v10 |
+| 0.862 | `final/submission_v10_m12_nei0.0.csv`（12 成員，不加偏差，**最終之一**） | v10 |
 | 0.886 | `sub_v9o_m10_sib_members_share1.5.csv`（10 成員） | v9 |
 | 0.884 | `sub_v9p_m11_all_share1.5.csv`（11 成員） | v9 |
 | 0.883 | `sub_v9q_m12_all_share1.5.csv`（12 成員 ＝ `final/submission_v9_m12_share1.5.csv`） | v9 |
